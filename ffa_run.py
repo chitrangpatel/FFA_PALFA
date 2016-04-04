@@ -92,7 +92,7 @@ print "For period range of :", p_ranges[0], ", 	  the sampling interval is : ", 
 c.ffa_code_stage1(ts, dt,T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
 c.ffa_code_stage2(ts, dt,T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
 c.ffa_code_stage3(ts, dt,T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
-sys.exit()
+
 #Going through subsets of periods 
 for num_p_ranges in range(len(p_ranges)-1):
 	rang = num_p_ranges+1 
