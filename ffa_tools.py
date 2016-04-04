@@ -37,7 +37,15 @@ def get_info_beam(beam):
 	T = N * dt
 	return T,dt,DM
 	
-
+	
+def write_inf(name,file_to_write):
+	inf_file = open(name + '.inf','r')
+	for line in inf_file:
+    		file_to_write.write(line)
+	inf_file.close()
+	return file_to_write
+		
+		
 def select_factor(ts, m, mm):
     """
 	select_factor(ts, m, mm):
