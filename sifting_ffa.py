@@ -931,12 +931,5 @@ class Candlist(object):
                                     numstars*'*' + '\n')
         if candfilenm is not None:
             candfile.close()
-#_______________________________________________________________________________________
 
 
-def main():
-
-
-
-if __name__ == '__main__':
-    main()
