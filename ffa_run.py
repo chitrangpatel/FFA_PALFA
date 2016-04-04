@@ -180,6 +180,7 @@ if write_cands:
 		fo.write(str(k)+'\t'+'\t'+str(cands.periods[i])+'\t'+'\t'+str(cands.SNRs[i])	+'\t'+'\t'+str(cands.widths[i])+'\n')
 		k+=1
 	print "Wrote ", str(k), "candidates in : "+name+'_cands.ffa'
+	f.write_inf(name,fo)
 	fo.close()
 
 
