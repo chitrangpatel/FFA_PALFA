@@ -70,7 +70,7 @@ minimum_dwn = dwn_ideal-int(dwn_ideal*0.05)
 maximum_dwn = dwn_ideal+int(dwn_ideal*0.15)
 
 ts,dwn = f.select_factor(ts,minimum_dwn,maximum_dwn)
-print 'Downsampling is being performed','\n'
+print 'Downsampling is being performed'
 ts = f.downsample(ts, dwn)
 
 # ------------- 	Detrending	------------------
@@ -87,8 +87,8 @@ ts2=ts
 # ------------- 		FFA		------------------
 dt= T/len(ts)
 count_lim = 2		# used in stage 2 and 3; how many consecutive downsamplings
-print "Initial time resolution: ",dt
-print " For period range of :", p_ranges[0], ", the sampling interval is : ", '%.5f'%(dt)
+print "Initial time resolution: ",'%.4f'%(dt),'/n'
+print "For period range of :", p_ranges[0], ", 	  the sampling interval is : ", '%.5f'%(dt)
 c.ffa_code_stage1(ts, dt,T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
 c.ffa_code_stage2(ts, dt,T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
 c.ffa_code_stage3(ts, dt,T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
@@ -105,7 +105,7 @@ for num_p_ranges in range(len(p_ranges)-1):
 	ts,dwn = f.select_factor(ts,minimum_dwn,maximum_dwn)
 	ts = f.downsample(ts, dwn)
 	dt = T/len(ts)
-	print " For period range of :", p_ranges[rang], ", the sampling interval is : ", '%.5f'%(dt)
+	print "For period range of :", p_ranges[rang], ",    the sampling interval is : ", '%.5f'%(dt)
 	c.ffa_code_stage1(ts, dt,T, p_ranges[rang][0],p_ranges[rang][1], SN_tresh, count_lim,name, cands)
 	c.ffa_code_stage2(ts, dt,T, p_ranges[rang][0],p_ranges[rang][1], SN_tresh, count_lim,name, cands)
 	c.ffa_code_stage3(ts, dt,T, p_ranges[rang][0],p_ranges[rang][1], SN_tresh, count_lim,name, cands)
@@ -127,9 +127,10 @@ if do_large_dc:
 	# ------------- 	Downsampling - extra	------------------
 	dt_list2=10*dt_list
 	dwn_ideal = 10
+	print "Doing the downsampling"
 	ts2 = f.forced_dws(ts2, dwn_ideal)
 	time_d = time.time() - time_downsamp
-	print ( " --- %.5s seconds is the time for downsampling  ---" % time_d),'\n' 
+	 
 	
 	# ------------- 	Detrending - extra------------------
 	print "Doing the detrending"
@@ -141,11 +142,11 @@ if do_large_dc:
 	print "Doing the normalization"
 	ts2= f.normalize(ts2)
 	dt= T/len(ts2)
-	print "Initial time resolution: ",dt
+	print "Initial time resolution: ",'%.4f'%(dt),'/n'
 	
 	# ------------- 		FFA - extra	------------------
 	count_lim = 1		# stops at 4*dt in stage 2 and at 9*dt in stage 3, otherwise duty-cycles~100%
-	print " For period range of :", p_ranges[0], ", the sampling interval is : ", '%.5f'%(dt)
+	print "For period range of :", p_ranges[0], ",    the sampling interval is : ", '%.5f'%(dt)
 	c.ffa_code_stage1(ts2, dt, T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
 	c.ffa_code_stage2(ts2, dt, T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
 	c.ffa_code_stage3(ts2, dt, T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
@@ -160,7 +161,7 @@ if do_large_dc:
 		if dwn !=1 or dwn !=0:
 			ts2 = f.downsample(ts2, dwn)
 		dt = T/len(ts2)
-		print " For period range of :", p_ranges[rang], ", the sampling interval is : ", '%.5f'%(dt)
+		print "For period range of :", p_ranges[rang], ",    the sampling interval is : ", '%.5f'%(dt)
 		c.ffa_code_stage1(ts2, dt, T, p_ranges[rang][0],p_ranges[rang][1],SN_tresh, count_lim,name,cands)
 		c.ffa_code_stage2(ts2, dt, T, p_ranges[rang][0],p_ranges[rang][1],SN_tresh, count_lim,name, cands)
 		c.ffa_code_stage3(ts2, dt, T, p_ranges[rang][0],p_ranges[rang][1],SN_tresh, count_lim,name, cands)
