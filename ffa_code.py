@@ -61,7 +61,7 @@ def ffa_code_stage1(data ,dt , T , p_min, p_max, SN_tresh , count_lim, name, can
 		Psec=P*dt
 		if len(Psec[i]) != 0:
 			width = [w]*len(Psec[i])
-			cands.add_cand( np.around(Psec[i],4), np.around(SN[i],2), width)
+			cands.add_cand( np.around(Psec[i],4), np.around(SN[i],2), dt)
 		SNs.extend(SN)
 		all_Ps.extend(Psec)
 
@@ -136,10 +136,10 @@ def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands)
 				Psec = P *new_dt2 
 				if len(Psec[j]) != 0:
 					width = [w]*len(Psec[j])
- 					cands.add_cand( np.around(Psec[j],4), np.around(SN_1[j],2), width)
+ 					cands.add_cand( np.around(Psec[j],4), np.around(SN_1[j],2), new_dt2)
 				if len(Psec[k]) != 0:
 					width = [w]*len(Psec[k])
- 					cands.add_cand( np.around(Psec[k],4), np.around(SN_2[k],2), width)
+ 					cands.add_cand( np.around(Psec[k],4), np.around(SN_2[k],2), new_dt2)
 
 
 				SNs.append(SN_1)
@@ -196,16 +196,16 @@ def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands)
 
 				if len(Psec[j]) != 0:
 					width = [w]*len(Psec[j])
- 					cands.add_cand( np.around(Psec[j],4), np.around(SN_11[j],2), width)
+ 					cands.add_cand( np.around(Psec[j],4), np.around(SN_11[j],2), new_dt2)
 				if len(Psec[k]) != 0:
 					width = [w]*len(Psec[k])
- 					cands.add_cand( np.around(Psec[k],4), np.around(SN_21[k],2), width)
+ 					cands.add_cand( np.around(Psec[k],4), np.around(SN_21[k],2), new_dt2)
 				if len(Psec[l]) != 0:
 					width = [w]*len(Psec[l])
- 					cands.add_cand( np.around(Psec[l],4), np.around(SN_12[l],2), width)
+ 					cands.add_cand( np.around(Psec[l],4), np.around(SN_12[l],2), new_dt2)
 				if len(Psec[m]) != 0:
 					width = [w]*len(Psec[m])
- 					cands.add_cand( np.around(Psec[m],4), np.around(SN_22[m],2), width)
+ 					cands.add_cand( np.around(Psec[m],4), np.around(SN_22[m],2), new_dt2)
 
 			SNs = np.concatenate(SNs)
 
@@ -281,28 +281,28 @@ def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands)
 
 				if len(Psec[j]) != 0:
 					width = [w]*len(Psec[j])
- 					cands.add_cand( np.around(Psec[j],4), np.around(SN_111[j],2), width)
+ 					cands.add_cand( np.around(Psec[j],4), np.around(SN_111[j],2), new_dt2)
 				if len(Psec[k]) != 0:
 					width = [w]*len(Psec[k])
- 					cands.add_cand( np.around(Psec[k],4), np.around(SN_211[k],2), width)
+ 					cands.add_cand( np.around(Psec[k],4), np.around(SN_211[k],2), new_dt2)
 				if len(Psec[l]) != 0:
 					width = [w]*len(Psec[l])
- 					cands.add_cand( np.around(Psec[l],4), np.around(SN_121[l],2), width)
+ 					cands.add_cand( np.around(Psec[l],4), np.around(SN_121[l],2), new_dt2)
 				if len(Psec[m]) != 0:
 					width = [w]*len(Psec[m])
- 					cands.add_cand( np.around(Psec[m],4), np.around(SN_221[m],2), width)
+ 					cands.add_cand( np.around(Psec[m],4), np.around(SN_221[m],2), new_dt2)
 				if len(Psec[n]) != 0:
 					width = [w]*len(Psec[n])
- 					cands.add_cand( np.around(Psec[n],4), np.around(SN_112[n],2), width)
+ 					cands.add_cand( np.around(Psec[n],4), np.around(SN_112[n],2), new_dt2)
 				if len(Psec[o]) != 0:
 					width = [w]*len(Psec[o])
- 					cands.add_cand( np.around(Psec[o],4), np.around(SN_212[o],2), width)
+ 					cands.add_cand( np.around(Psec[o],4), np.around(SN_212[o],2), new_dt2)
 				if len(Psec[q]) != 0:
 					width = [w]*len(Psec[q])
- 					cands.add_cand( np.around(Psec[q],4), np.around(SN_122[q],2), width)
+ 					cands.add_cand( np.around(Psec[q],4), np.around(SN_122[q],2), new_dt2)
 				if len(Psec[r]) != 0:
 					width = [w]*len(Psec[r])
- 					cands.add_cand( np.around(Psec[r],4), np.around(SN_222[r],2), width)
+ 					cands.add_cand( np.around(Psec[r],4), np.around(SN_222[r],2), new_dt2)
 
 			
 			SNs = np.concatenate(SNs)
@@ -364,13 +364,13 @@ def ffa_code_stage3(data ,dt ,T,p_min,p_max, SN_tresh,count_lim,name, cands):
 				all_Ps.extend(Psec)
 				if len(Psec[j]) != 0:
 					width = [w]*len(Psec[j])
- 					cands.add_cand( np.around(Psec[j],4), np.around(SN_1[j],2), width)
+ 					cands.add_cand( np.around(Psec[j],4), np.around(SN_1[j],2), new_dt3)
 				if len(Psec[k]) != 0:
 					width = [w]*len(Psec[k])
- 					cands.add_cand( np.around(Psec[k],4), np.around(SN_2[k],2), width)
+ 					cands.add_cand( np.around(Psec[k],4), np.around(SN_2[k],2), new_dt3)
 				if len(Psec[l]) != 0:
 					width = [w]*len(Psec[l])
- 					cands.add_cand( np.around(Psec[l],4), np.around(SN_3[l],2), width)
+ 					cands.add_cand( np.around(Psec[l],4), np.around(SN_3[l],2), new_dt3)
 
 
 			SNs = np.concatenate(SNs)
@@ -443,31 +443,31 @@ def ffa_code_stage3(data ,dt ,T,p_min,p_max, SN_tresh,count_lim,name, cands):
 
 				if len(Psec[j]) != 0:
 					width = [w]*len(Psec[j])
-					cands.add_cand( np.around(Psec[j],4), np.around(SN_11[j],2), width)
+					cands.add_cand( np.around(Psec[j],4), np.around(SN_11[j],2), new_dt3)
 				if len(Psec[k]) != 0:
 					width = [w]*len(Psec[k])
- 					cands.add_cand( np.around(Psec[k],4), np.around(SN_21[k],2), width)
+ 					cands.add_cand( np.around(Psec[k],4), np.around(SN_21[k],2), new_dt3)
 				if len(Psec[l]) != 0:
 					width = [w]*len(Psec[l])
- 					cands.add_cand( np.around(Psec[l],4), np.around(SN_31[l],2), width)
+ 					cands.add_cand( np.around(Psec[l],4), np.around(SN_31[l],2), new_dt3)
 				if len(Psec[m]) != 0:
 					width = [w]*len(Psec[m])
- 					cands.add_cand( np.around(Psec[m],4), np.around(SN_12[m],2), width)
+ 					cands.add_cand( np.around(Psec[m],4), np.around(SN_12[m],2),new_dt3)
 				if len(Psec[n]) != 0:
 					width = [w]*len(Psec[n])
- 					cands.add_cand( np.around(Psec[n],4), np.around(SN_22[n],2), width)
+ 					cands.add_cand( np.around(Psec[n],4), np.around(SN_22[n],2),new_dt3)
 				if len(Psec[o]) != 0:
 					width = [w]*len(Psec[o])
- 					cands.add_cand( np.around(Psec[o],4), np.around(SN_32[o],2), width)
+ 					cands.add_cand( np.around(Psec[o],4), np.around(SN_32[o],2),new_dt3)
 				if len(Psec[q]) != 0:
 					width = [w]*len(Psec[q])
- 					cands.add_cand( np.around(Psec[q],4), np.around(SN_13[q],2), width)
+ 					cands.add_cand( np.around(Psec[q],4), np.around(SN_13[q],2),new_dt3)
 				if len(Psec[r]) != 0:
 					width = [w]*len(Psec[r])
- 					cands.add_cand( np.around(Psec[r],4), np.around(SN_23[r],2), width)
+ 					cands.add_cand( np.around(Psec[r],4), np.around(SN_23[r],2),new_dt3)
 				if len(Psec[s]) != 0:
 					width = [w]*len(Psec[s])
- 					cands.add_cand( np.around(Psec[s],4), np.around(SN_33[s],2), width)
+ 					cands.add_cand( np.around(Psec[s],4), np.around(SN_33[s],2),new_dt3)
 
 			count+=1
 			# ----------------     Periodogram plot  --------------------
@@ -621,85 +621,85 @@ def ffa_code_stage3(data ,dt ,T,p_min,p_max, SN_tresh,count_lim,name, cands):
 
 				if len(Psec[j]) != 0:
 					width = [w]*len(Psec[j])
- 					cands.add_cand( np.around(Psec[j],4), np.around(SN_111[j],2), width)
+ 					cands.add_cand( np.around(Psec[j],4), np.around(SN_111[j],2),new_dt3)
 				if len(Psec[k]) != 0:
 					width = [w]*len(Psec[k])
- 					cands.add_cand( np.around(Psec[k],4), np.around(SN_211[k],2), width)
+ 					cands.add_cand( np.around(Psec[k],4), np.around(SN_211[k],2),new_dt3)
 				if len(Psec[l]) != 0:
 					width = [w]*len(Psec[l])
- 					cands.add_cand( np.around(Psec[l],4), np.around(SN_311[l],2), width)
+ 					cands.add_cand( np.around(Psec[l],4), np.around(SN_311[l],2),new_dt3)
 				if len(Psec[m]) != 0:
 					width = [w]*len(Psec[m])
- 					cands.add_cand( np.around(Psec[m],4), np.around(SN_121[m],2), width)
+ 					cands.add_cand( np.around(Psec[m],4), np.around(SN_121[m],2),new_dt3)
 				if len(Psec[n]) != 0:
 					width = [w]*len(Psec[n])
- 					cands.add_cand( np.around(Psec[n],4), np.around(SN_221[n],2), width)
+ 					cands.add_cand( np.around(Psec[n],4), np.around(SN_221[n],2),new_dt3)
 				if len(Psec[o]) != 0:
 					width = [w]*len(Psec[o])
- 					cands.add_cand( np.around(Psec[o],4), np.around(SN_321[o],2), width)
+ 					cands.add_cand( np.around(Psec[o],4), np.around(SN_321[o],2),new_dt3)
 				if len(Psec[q]) != 0:
 					width = [w]*len(Psec[q])
- 					cands.add_cand( np.around(Psec[q],4), np.around(SN_131[q],2), width)
+ 					cands.add_cand( np.around(Psec[q],4), np.around(SN_131[q],2),new_dt3)
 				if len(Psec[r]) != 0:
 					width = [w]*len(Psec[r])
- 					cands.add_cand( np.around(Psec[r],4), np.around(SN_231[r],2), width)
+ 					cands.add_cand( np.around(Psec[r],4), np.around(SN_231[r],2),new_dt3)
 				if len(Psec[s]) != 0:
 					width = [w]*len(Psec[s])
- 					cands.add_cand( np.around(Psec[s],4), np.around(SN_331[s],2), width)
+ 					cands.add_cand( np.around(Psec[s],4), np.around(SN_331[s],2),new_dt3)
 				if len(Psec[jj]) != 0:
 					width = [w]*len(Psec[jj])
- 					cands.add_cand( np.around(Psec[jj],4), np.around(SN_112[jj],2), width)
+ 					cands.add_cand( np.around(Psec[jj],4), np.around(SN_112[jj],2),new_dt3)
 				if len(Psec[kk]) != 0:
 					width = [w]*len(Psec[kk])
- 					cands.add_cand( np.around(Psec[kk],4), np.around(SN_212[kk],2), width)
+ 					cands.add_cand( np.around(Psec[kk],4), np.around(SN_212[kk],2),new_dt3)
 				if len(Psec[ll]) != 0:
 					width = [w]*len(Psec[ll])
- 					cands.add_cand( np.around(Psec[ll],4), np.around(SN_312[ll],2), width)
+ 					cands.add_cand( np.around(Psec[ll],4), np.around(SN_312[ll],2),new_dt3)
 				if len(Psec[mm]) != 0:
 					width = [w]*len(Psec[mm])
- 					cands.add_cand( np.around(Psec[mm],4), np.around(SN_122[mm],2), width)
+ 					cands.add_cand( np.around(Psec[mm],4), np.around(SN_122[mm],2),new_dt3)
 				if len(Psec[nn]) != 0:
 					width = [w]*len(Psec[nn])
- 					cands.add_cand( np.around(Psec[nn],4), np.around(SN_222[nn],2), width)
+ 					cands.add_cand( np.around(Psec[nn],4), np.around(SN_222[nn],2),new_dt3)
 				if len(Psec[oo]) != 0:
 					width = [w]*len(Psec[oo])
- 					cands.add_cand( np.around(Psec[oo],4), np.around(SN_322[oo],2), width)
+ 					cands.add_cand( np.around(Psec[oo],4), np.around(SN_322[oo],2),new_dt3)
 				if len(Psec[qq]) != 0:
 					width = [w]*len(Psec[qq])
- 					cands.add_cand( np.around(Psec[qq],4), np.around(SN_132[qq],2), width)
+ 					cands.add_cand( np.around(Psec[qq],4), np.around(SN_132[qq],2),new_dt3)
 				if len(Psec[rr]) != 0:
 					width = [w]*len(Psec[rr])
- 					cands.add_cand( np.around(Psec[rr],4), np.around(SN_232[rr],2), width)
+ 					cands.add_cand( np.around(Psec[rr],4), np.around(SN_232[rr],2),new_dt3)
 				if len(Psec[ss]) != 0:
 					width = [w]*len(Psec[ss])
- 					cands.add_cand( np.around(Psec[ss],4), np.around(SN_332[ss],2), width)
+ 					cands.add_cand( np.around(Psec[ss],4), np.around(SN_332[ss],2),new_dt3)
 				if len(Psec[jjj]) != 0:
 					width = [w]*len(Psec[jjj])
- 					cands.add_cand( np.around(Psec[jjj],4), np.around(SN_113[jjj],2), width)
+ 					cands.add_cand( np.around(Psec[jjj],4), np.around(SN_113[jjj],2),new_dt3)
 				if len(Psec[kkk]) != 0:
 					width = [w]*len(Psec[kkk])
- 					cands.add_cand( np.around(Psec[kkk],4), np.around(SN_213[kkk],2), width)
+ 					cands.add_cand( np.around(Psec[kkk],4), np.around(SN_213[kkk],2),new_dt3)
 				if len(Psec[lll]) != 0:
 					width = [w]*len(Psec[lll])
- 					cands.add_cand( np.around(Psec[lll],4), np.around(SN_313[lll],2), width)
+ 					cands.add_cand( np.around(Psec[lll],4), np.around(SN_313[lll],2),new_dt3)
 				if len(Psec[mmm]) != 0:
 					width = [w]*len(Psec[mmm])
- 					cands.add_cand( np.around(Psec[mmm],4), np.around(SN_123[mmm],2), width)
+ 					cands.add_cand( np.around(Psec[mmm],4), np.around(SN_123[mmm],2),new_dt3)
 				if len(Psec[nnn]) != 0:
 					width = [w]*len(Psec[nnn])
- 					cands.add_cand( np.around(Psec[nnn],4), np.around(SN_223[nnn],2), width)
+ 					cands.add_cand( np.around(Psec[nnn],4), np.around(SN_223[nnn],2),new_dt3)
 				if len(Psec[ooo]) != 0:
 					width = [w]*len(Psec[ooo])
- 					cands.add_cand( np.around(Psec[ooo],4), np.around(SN_323[ooo],2), width)
+ 					cands.add_cand( np.around(Psec[ooo],4), np.around(SN_323[ooo],2),new_dt3)
 				if len(Psec[qqq]) != 0:
 					width = [w]*len(Psec[qqq])
- 					cands.add_cand( np.around(Psec[qqq],4), np.around(SN_133[qqq],2), width)
+ 					cands.add_cand( np.around(Psec[qqq],4), np.around(SN_133[qqq],2),new_dt3)
 				if len(Psec[rrr]) != 0:
 					width = [w]*len(Psec[rrr])
- 					cands.add_cand( np.around(Psec[rrr],4), np.around(SN_233[rrr],2), width)
+ 					cands.add_cand( np.around(Psec[rrr],4), np.around(SN_233[rrr],2),new_dt3)
 				if len(Psec[sss]) != 0:
 					width = [w]*len(Psec[sss])
- 					cands.add_cand( np.around(Psec[sss],4), np.around(SN_333[sss],2), width)
+ 					cands.add_cand( np.around(Psec[sss],4), np.around(SN_333[sss],2),new_dt3)
 
 			count+=1
 
