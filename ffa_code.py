@@ -18,12 +18,13 @@ colors = ['green','mediumturquoise','dodgerblue','mediumblue','blueviolet','mage
 c=0
 fill_value=0
 
-def ffa_code_stage1(data ,dt , T , p_min, p_max, SN_tresh , count_lim, name, cands):
+def ffa_code_stage1(data ,dt , T ,sigma_total, p_min, p_max, SN_tresh , count_lim, name, cands):
 	"""
 	ffa_code_stage1 (data , dt , T, period , N , p_min , p_max , medfilt_SN , write_sns, SN_tresh , count_lim , name , cands):
 		- data		:  Time series 
 		- dt		:  Sampling interval (s)
 		- T		:  Total observative time (s)
+		- sigma_total	:  Total standard deviation of the timeseries (initially downsampled)
 		- p_min		:  Minimum period in the subset of trial periods (s)
 		- p_max		:  Maximum period in the subset of trial periods (s)
 		- SN_tresh 	:  S/N treshold when selecting candidates 
@@ -41,7 +42,6 @@ def ffa_code_stage1(data ,dt , T , p_min, p_max, SN_tresh , count_lim, name, can
 	w=int(1)
 	P0_start, P0_end = np.floor(p_min/dt), np.ceil(p_max/dt)
 	P0s = np.arange(P0_start,P0_end,1)
-	sigma_total = np.std(data)
 	SNs,all_Ps =[],[]
 	FFA_time1 = time.time()
 	print '\n','\n',"Folding for periods from ", p_min, ' to ',p_max, 'sec   with sampling interval',dt,'\n','\n','\n'
@@ -75,12 +75,13 @@ def ffa_code_stage1(data ,dt , T , p_min, p_max, SN_tresh , count_lim, name, can
 # --------------------	   FFA Stage 2	------------------------------
 # -------------------- Extra downsampling : 2 	----------------------
 
-def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands):
+def ffa_code_stage2(data ,dt ,T, sigma_total, p_min, p_max, SN_tresh, count_lim, name, cands):
 	"""
 	ffa_code_stage2 (data , dt , T, period , N , p_min , p_max , medfilt_SN , write_sns, SN_tresh , count_lim , name , cands):
 		- data		:  Time series 
 		- dt		:  Sampling interval (s)
 		- T		:  Total observative time (s)
+		- sigma_total	:  Total standard deviation of the timeseries (initially downsampled)
 		- p_min		:  Minimum period in the subset of trial periods (s)
 		- p_max		:  Maximum period in the subset of trial periods (s)
 		- SN_tresh 	:  S/N treshold when selecting candidates 
@@ -96,7 +97,6 @@ def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands)
 	
 	P0_start, P0_end = np.floor(p_min/dt), np.ceil(p_max/dt)
 	P0s = np.arange(P0_start,P0_end,1)
-	sigma_total = np.std(data)
 	count=0
 	w=int(2)
 	while count<=count_lim:
@@ -312,12 +312,27 @@ def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands)
 	
 # --------------------	   FFA Stage 3	----------------------
 # -------------------- -                Extra downsampling : 3 	----------------------
-def ffa_code_stage3(data ,dt ,T,p_min,p_max, SN_tresh,count_lim,name, cands):	
-	
+def ffa_code_stage3(data ,dt ,T, sigma_total, p_min,p_max, SN_tresh,count_lim,name, cands):	
+	"""
+	ffa_code_stage3 (data , dt , T, period , N , p_min , p_max , medfilt_SN , write_sns, SN_tresh , count_lim , name , cands):
+		- data		:  Time series 
+		- dt		:  Sampling interval (s)
+		- T		:  Total observative time (s)
+		- sigma_total	:  Total standard deviation of the timeseries (initially downsampled)
+		- p_min		:  Minimum period in the subset of trial periods (s)
+		- p_max		:  Maximum period in the subset of trial periods (s)
+		- SN_tresh 	:  S/N treshold when selecting candidates 
+		- count_lim	:  int 1 or 2, used in stage2 and stage 3
+				   if count_lim =1, goes to 4*dt and 9*dt 
+				   if count_lim =2, goes to 8*dt and 27*dt
+		- name		:  Name of the beam (without the extension)
+		- cands 	:  ffa candidates to be written, belong to class_ffa (see ffa_run.py)
+
+	Returns nothing, adds candidates period with S/N > SN_tresh to cands 
+
+	"""
 	P0_start, P0_end = np.floor(p_min/dt), np.ceil(p_max/dt)
 	P0s = np.arange(P0_start,P0_end,1)
-	sigma_total = np.std(data)
-
 	count=0
 	plot_num=311
 	larges_dt3=[]
