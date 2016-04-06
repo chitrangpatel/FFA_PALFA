@@ -16,22 +16,22 @@ total_time=time.time()
 
 
 class ffa_cands(object):
-
+    """
+    FFA candidates has 3 parameters: the period (sec), the SNR and the sampling interval, dt (sec). 
+    """
     def __init__(self):
 	self.periods = np.array([])
 	self.SNRs =  np.array([])
-	self.widths = np.array([])
-	self.cand_id = np.array([]) 
+	self.dts = np.array([])
 
-    def add_cand(self,p,SNR,width):
+    def add_cand(self,p,SNR,dt):
 	self.periods = np.insert(self.periods,0, p)
 	self.SNRs = np.insert(self.SNRs,0, SNR)
-	self.widths = np.insert(self.widths,0,width)
-	#self.cand_id = np.insert(self.cand_id,0,len(self.periods))
+	self.dts = np.insert(self.dts,0,dt)
 
     def print_content(self):
-	print "  Period : ", self.periods,  ", SNR: ", self.SNRs, ", width: ", self.widths
-	print "	len(P): ",len(self.periods), ",   len(SNR): ",len(self.SNRs)," ,   len(widths): ",len(self.widths)
+	print "  Period : ", self.periods,  ", SNR: ", self.SNRs, ",dt: ", self.dts
+	print "	len(P): ",len(self.periods), ",   len(SNR): ",len(self.SNRs)," ,   len(dts): ",len(self.dts)
 
 
 # ------------- 	Initial		------------------
@@ -79,9 +79,6 @@ window_size = 30*int(len(ts)/T)		#window size over which statistics are computed
 break_points = np.arange(0,len(ts),window_size) 
 ts = scipy.signal.detrend(ts,bp=break_points)
 
-# ------------- 	Normalization	------------------
-print "Normalizing the time-series"
-ts= f.normalize(ts)
 ts2=ts
 
 # ------------- 		FFA		------------------
@@ -138,11 +135,6 @@ if do_large_dc:
 	break_points = np.arange(0,len(ts2),window_size) 
 	ts2 = scipy.signal.detrend(ts2,bp=break_points)
 	
-	# ------------- 	Normalization - extra	------------------
-	print "Doing the normalization"
-	ts2= f.normalize(ts2)
-	dt= T/len(ts2)
-	print "Initial time resolution: ",'%.4f'%(dt),'/n'
 	
 	# ------------- 		FFA - extra	------------------
 	count_lim = 1		# stops at 4*dt in stage 2 and at 9*dt in stage 3, otherwise duty-cycles~100%
@@ -177,7 +169,7 @@ if write_cands:
 	k=int(1)
 	fo = open(name+'_cands.ffa','w')
 	for i in range(len(cands.periods)):
-		fo.write(str(k)+'\t'+'\t'+str(cands.periods[i])+'\t'+'\t'+str(cands.SNRs[i])	+'\t'+'\t'+str(cands.widths[i])+'\n')
+		fo.write(str(k)+'\t'+'\t'+str(cands.periods[i])+'\t'+'\t'+str(cands.SNRs[i])	+'\t'+'\t'+str(cands.dts[i])+'\n')
 		k+=1
 	print "Wrote ", str(k), "candidates in : "+name+'_cands.ffa'
 	f.write_inf(name,fo)
