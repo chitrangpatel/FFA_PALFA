@@ -80,15 +80,15 @@ break_points = np.arange(0,len(ts),window_size)
 ts = scipy.signal.detrend(ts,bp=break_points)
 
 ts2=ts
-
+sigma_total = np.std(ts)
 # ------------- 		FFA		------------------
 dt= T/len(ts)
 count_lim = 2		# used in stage 2 and 3; how many consecutive downsamplings
 print "Initial time resolution: ",'%.4f'%(dt),'/n'
 print "For period range of :", p_ranges[0], ", 	  the sampling interval is : ", '%.5f'%(dt)
-c.ffa_code_stage1(ts, dt,T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
-c.ffa_code_stage2(ts, dt,T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
-c.ffa_code_stage3(ts, dt,T, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
+c.ffa_code_stage1(ts, dt,T, sigma_total,p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
+c.ffa_code_stage2(ts, dt, T, sigma_total, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
+c.ffa_code_stage3(ts, dt, T, sigma_total, p_ranges[0][0],p_ranges[0][1],SN_tresh, count_lim,name, cands)
 
 #Going through subsets of periods 
 for num_p_ranges in range(len(p_ranges)-1):
@@ -103,9 +103,9 @@ for num_p_ranges in range(len(p_ranges)-1):
 	ts = f.downsample(ts, dwn)
 	dt = T/len(ts)
 	print "For period range of :", p_ranges[rang], ",    the sampling interval is : ", '%.5f'%(dt)
-	c.ffa_code_stage1(ts, dt,T, p_ranges[rang][0],p_ranges[rang][1], SN_tresh, count_lim,name, cands)
-	c.ffa_code_stage2(ts, dt,T, p_ranges[rang][0],p_ranges[rang][1], SN_tresh, count_lim,name, cands)
-	c.ffa_code_stage3(ts, dt,T, p_ranges[rang][0],p_ranges[rang][1], SN_tresh, count_lim,name, cands)
+	c.ffa_code_stage1(ts, dt, T, sigma_total, p_ranges[rang][0],p_ranges[rang][1], SN_tresh, count_lim,name, cands)
+	c.ffa_code_stage2(ts, dt, T, sigma_total, p_ranges[rang][0],p_ranges[rang][1], SN_tresh, count_lim,name, cands)
+	c.ffa_code_stage3(ts, dt, T, sigma_total, p_ranges[rang][0],p_ranges[rang][1], SN_tresh, count_lim,name, cands)
 
 # ------------- 		end of FFA		------------------
 
