@@ -97,15 +97,6 @@ def make_factor_10(x):
 		x=np.delete(x,-1)
 	return x
 
-def normalize(lst):
-    """
-	normalize(lst):
-	lst: Input must be 1-D
-	returns the normalized array 
-    """
-    s = sum(lst)
-    return array(map(lambda x: float(x)/s, lst))
-
 
 def downsample(vector, factor):
     """
@@ -145,7 +136,7 @@ def forced_dws_2phase(data):
 		data1=downsample(data,2)
 		f=data[0]
 		l=data[-1]
-		f_l=(f+l)/2
+		f_l=(f+l)
 		data2=np.delete(data,0)
 		data2=np.delete(data2,-1)
 		data2=downsample(data2,2)
@@ -167,8 +158,8 @@ def forced_dws_3phase(data):
 		ff=data[1]
 		l=data[-1]
 		ll=data[-2]
-		f_l_ll=(f+l+ll)/3
-		f_ff_l=(f+ff+l)/3
+		f_l_ll=(f+l+ll)
+		f_ff_l=(f+ff+l)
 
 		data2=np.delete(data,0)
 		data2=np.delete(data2,-1)
