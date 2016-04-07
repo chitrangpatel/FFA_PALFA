@@ -174,7 +174,7 @@ def forced_dws_3phase(data):
 		data3=np.append(data3,f_ff_l)
 
 
-		return np.array(normalize(data1)),np.array(normalize(data2)),np.array(normalize(data2))		
+		return np.array(data1),np.array(data2),np.array(data2)	
 
 
 def forced_dws(data,factor):
