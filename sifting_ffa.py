@@ -169,31 +169,6 @@ def print_sift_globals():
     print "known_birds_f =", known_birds_f
 
 
-def parse_power(pow):
-    power = float(pow.split("(")[0])
-    if ("^" in pow):  # add exponent...
-        try:
-            expon = float(pow.split("^")[1])
-        except ValueError:
-            expon = 5 # power gets chopped off if this large
-        power *= 10.0**(expon)
-    return power
-
-
-def cmp_snr(self, other):
-    retval = -cmp(self.snr, other.snr)
-    if retval==0:
-        return -cmp(self.snr, other.snr)
-    else:
-        return retval
-
-
-def cmp_dms(self, other):
-    return cmp(float(self[0]), float(other[0]))
-
-
-
-
 class Candidate(object):
 # CHANGED sigma -> SNR
 # REMOVED POWER STUFF AND HARM 
@@ -219,7 +194,6 @@ class Candidate(object):
 	print cand
         return "%-65s   %7.2f  %6.2f   %s   %7.5f   "% (cand, self.p*1000, self.snr, self.DM, self.dt*1000)
 # REMOVED HARMS_TO_SNR
-
 
 
 class Candlist(object):
