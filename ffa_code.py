@@ -18,13 +18,12 @@ colors = ['green','mediumturquoise','dodgerblue','mediumblue','blueviolet','mage
 c=0
 fill_value=0
 
-def ffa_code_stage1(data ,dt , T ,sigma_total, p_min, p_max, SN_tresh , count_lim, name, cands):
+def ffa_code_stage1(data ,dt , T , p_min, p_max, SN_tresh , count_lim, name, cands):
 	"""
 	ffa_code_stage1 (data , dt , T, period , N , p_min , p_max , medfilt_SN , write_sns, SN_tresh , count_lim , name , cands):
 		- data		:  Time series 
 		- dt		:  Sampling interval (s)
 		- T		:  Total observative time (s)
-		- sigma_total	:  Total standard deviation of the timeseries (initially downsampled)
 		- p_min		:  Minimum period in the subset of trial periods (s)
 		- p_max		:  Maximum period in the subset of trial periods (s)
 		- SN_tresh 	:  S/N treshold when selecting candidates 
@@ -42,9 +41,9 @@ def ffa_code_stage1(data ,dt , T ,sigma_total, p_min, p_max, SN_tresh , count_li
 	w=int(1)
 	P0_start, P0_end = np.floor(p_min/dt), np.ceil(p_max/dt)
 	P0s = np.arange(P0_start,P0_end,1)
-	SNs,all_Ps =[],[]
+	sigma_total = np.std(data)
 	FFA_time1 = time.time()
-	print '\n','\n',"Folding for periods from ", p_min, ' to ',p_max, 'sec   with sampling interval',dt,'\n','\n','\n'
+	print '\n',"Folding for periods from ", p_min, ' to ',p_max, 'sec   with sampling interval',dt,'\n'
 	for p0 in P0s:
 		p0 = int(p0)
 		if p0==0 or p0 ==1:
@@ -75,13 +74,12 @@ def ffa_code_stage1(data ,dt , T ,sigma_total, p_min, p_max, SN_tresh , count_li
 # --------------------	   FFA Stage 2	------------------------------
 # -------------------- Extra downsampling : 2 	----------------------
 
-def ffa_code_stage2(data ,dt ,T, sigma_total, p_min, p_max, SN_tresh, count_lim, name, cands):
+def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands):
 	"""
 	ffa_code_stage2 (data , dt , T, period , N , p_min , p_max , medfilt_SN , write_sns, SN_tresh , count_lim , name , cands):
 		- data		:  Time series 
 		- dt		:  Sampling interval (s)
 		- T		:  Total observative time (s)
-		- sigma_total	:  Total standard deviation of the timeseries (initially downsampled)
 		- p_min		:  Minimum period in the subset of trial periods (s)
 		- p_max		:  Maximum period in the subset of trial periods (s)
 		- SN_tresh 	:  S/N treshold when selecting candidates 
@@ -102,17 +100,14 @@ def ffa_code_stage2(data ,dt ,T, sigma_total, p_min, p_max, SN_tresh, count_lim,
 	while count<=count_lim:
 		print '\n','\n','-                Extra downsampling of 2 is being performed'
 		if count==0:	
-
 			data_1,data_2 = f.forced_dws_2phase(data)
 			new_dt2 = dt*2
-			SNs,all_Ps = [], []
 			print '\n',"-    	* * *	 	Sampling interval : ",new_dt2*1000," ms	* * * "
 			N = T/(new_dt2)
 			P0_start, P0_end = np.floor(p_min/new_dt2), np.ceil(p_max/new_dt2)
 			P0s2=np.arange(P0_start,P0_end,1)
 			sigma_total = np.mean([np.std(data_1),np.std(data_2)])
 			print "		Folding ..."
-
 			for p0 in P0s2:
 				p0=int(p0)
 				if p0==0 or p0 ==1:
@@ -141,11 +136,6 @@ def ffa_code_stage2(data ,dt ,T, sigma_total, p_min, p_max, SN_tresh, count_lim,
 					width = [w]*len(Psec[k])
  					cands.add_cand( np.around(Psec[k],4), np.around(SN_2[k],2), new_dt2)
 
-
-				SNs.append(SN_1)
-				all_Ps.extend(Psec)
-			SNs = np.concatenate(SNs)
-
 			
 
 		if count == 1:
@@ -155,11 +145,9 @@ def ffa_code_stage2(data ,dt ,T, sigma_total, p_min, p_max, SN_tresh, count_lim,
 			new_dt2 = new_dt2*2
 			w=int(w*2)
 			N = T/(new_dt2)
-			SNs,all_Ps = [], []
 			P0_start, P0_end = np.floor(p_min/new_dt2), np.ceil(p_max/new_dt2)
 			P0s2=np.arange(P0_start,P0_end,1)
 			sigma_total = np.mean([np.std(data_11),np.std(data_12),np.std(data_21),np.std(data_22)])
-
 			print '\n',"-           * * * 	Sampling interval : ",new_dt2*1000," ms		* * *"
 			print "-            Folding ..."
 			for p0 in P0s2:
@@ -191,8 +179,6 @@ def ffa_code_stage2(data ,dt ,T, sigma_total, p_min, p_max, SN_tresh, count_lim,
 				M = folds_11.shape[0]
 				P = p0 + (np.arange(M, dtype=np.float) / (M-1))
 				Psec = P *new_dt2 
-				SNs.append(SN_11)
-				all_Ps.extend(Psec)
 
 				if len(Psec[j]) != 0:
 					width = [w]*len(Psec[j])
@@ -207,8 +193,6 @@ def ffa_code_stage2(data ,dt ,T, sigma_total, p_min, p_max, SN_tresh, count_lim,
 					width = [w]*len(Psec[m])
  					cands.add_cand( np.around(Psec[m],4), np.around(SN_22[m],2), new_dt2)
 
-			SNs = np.concatenate(SNs)
-
 
 
 		if count == 2:
@@ -219,8 +203,6 @@ def ffa_code_stage2(data ,dt ,T, sigma_total, p_min, p_max, SN_tresh, count_lim,
 			data_221, data_222 = f.forced_dws_2phase(data_22)	
 			new_dt2 = new_dt2*2
 			w=int(w*2)
-
-			SNs,all_Ps = [], []
 			N = T/(new_dt2)
 
 			P0_start, P0_end = np.floor(p_min/new_dt2), np.ceil(p_max/new_dt2)
@@ -276,8 +258,6 @@ def ffa_code_stage2(data ,dt ,T, sigma_total, p_min, p_max, SN_tresh, count_lim,
 				M = folds_111.shape[0]
 				P = p0 + (np.arange(M, dtype=np.float) / (M-1))
 				Psec = P *new_dt2
-				SNs.append(SN_111)
-				all_Ps.extend(Psec)
 
 				if len(Psec[j]) != 0:
 					width = [w]*len(Psec[j])
@@ -304,21 +284,18 @@ def ffa_code_stage2(data ,dt ,T, sigma_total, p_min, p_max, SN_tresh, count_lim,
 					width = [w]*len(Psec[r])
  					cands.add_cand( np.around(Psec[r],4), np.around(SN_222[r],2), new_dt2)
 
-			
-			SNs = np.concatenate(SNs)
 		count+=1
 	
 
 	
 # --------------------	   FFA Stage 3	----------------------
 # -------------------- -                Extra downsampling : 3 	----------------------
-def ffa_code_stage3(data ,dt ,T, sigma_total, p_min,p_max, SN_tresh,count_lim,name, cands):	
+def ffa_code_stage3(data ,dt ,T, p_min,p_max, SN_tresh,count_lim,name, cands):	
 	"""
 	ffa_code_stage3 (data , dt , T, period , N , p_min , p_max , medfilt_SN , write_sns, SN_tresh , count_lim , name , cands):
 		- data		:  Time series 
 		- dt		:  Sampling interval (s)
 		- T		:  Total observative time (s)
-		- sigma_total	:  Total standard deviation of the timeseries (initially downsampled)
 		- p_min		:  Minimum period in the subset of trial periods (s)
 		- p_max		:  Maximum period in the subset of trial periods (s)
 		- SN_tresh 	:  S/N treshold when selecting candidates 
@@ -347,7 +324,6 @@ def ffa_code_stage3(data ,dt ,T, sigma_total, p_min,p_max, SN_tresh,count_lim,na
 			P0_start, P0_end = np.floor(p_min/new_dt3), np.ceil(p_max/new_dt3)
 			P0s3=np.arange(P0_start,P0_end,1)
 			sigma_total = np.mean([np.std(data_1),np.std(data_2),np.std(data_3)])
-			SNs,all_Ps = [], []
 			print "-            Folding ..."
 			for p0 in P0s3:
 				p0=int(p0)
@@ -375,8 +351,6 @@ def ffa_code_stage3(data ,dt ,T, sigma_total, p_min,p_max, SN_tresh,count_lim,na
 
 				P = p0 + (np.arange(M, dtype=np.float) / (M-1))
 				Psec = P *new_dt3 
-				SNs.append(SN_1)
-				all_Ps.extend(Psec)
 				if len(Psec[j]) != 0:
 					width = [w]*len(Psec[j])
  					cands.add_cand( np.around(Psec[j],4), np.around(SN_1[j],2), new_dt3)
@@ -387,8 +361,6 @@ def ffa_code_stage3(data ,dt ,T, sigma_total, p_min,p_max, SN_tresh,count_lim,na
 					width = [w]*len(Psec[l])
  					cands.add_cand( np.around(Psec[l],4), np.around(SN_3[l],2), new_dt3)
 
-
-			SNs = np.concatenate(SNs)
 			count+=1
 		
 
