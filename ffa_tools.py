@@ -191,13 +191,13 @@ def look_for_nan(SN):
 
 
 #-----------------------	Signal-to-noise function	-----------------------
-def simple_SNR(folds, sigma_total, w):
+def SNR_func(folds, sigma_total, w, added_profs):
     """Return a very simple signal-to-noise for a profile.
        Works for narrow duty-cycle since  the S/N is max_value/std
 	For each M profiles, returns a value of SNR (i.e, output is a list of lenght M)
     """
     M, P0 = folds.shape
-    prof_std = 1.0/(np.sqrt(M)*sigma_total)
+    prof_std = 1.0/(np.sqrt(M-added_profs)*sigma_total)
     snr = (folds.max(axis=1)-np.median(folds, axis=1))*prof_std
     look_for_nan(snr)
     return snr
