@@ -46,6 +46,8 @@ def ffa_code_stage1(data ,dt , T , p_min, p_max, SN_tresh , count_lim, name, can
 	print '\n',"Folding for periods from ", p_min, ' to ',p_max, 'sec   with sampling interval',dt,'\n'
 	for p0 in P0s:
 		p0 = int(p0)
+		M_real = float(float(N)/p0)
+		added_profs = 2**(int(math.floor(math.log(M_real,2)) + 1)) - M_real
 		if p0==0 or p0 ==1:
 			print 'It tried to fold with period = 0 bin or 1 bin'
 			continue
@@ -54,7 +56,7 @@ def ffa_code_stage1(data ,dt , T , p_min, p_max, SN_tresh , count_lim, name, can
 		folds = FFA.FFA(xwrap)
 		M = folds.shape[0]
 
-		SN = f.simple_SNR(folds, sigma_total, w)
+		SN = f.SNR_func(folds, sigma_total, w)
 		i = SN >= SN_tresh   
 		P = p0 + (np.arange(M, dtype=np.float) / (M-1))
 		Psec=P*dt
@@ -110,6 +112,8 @@ def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands)
 			print "		Folding ..."
 			for p0 in P0s2:
 				p0=int(p0)
+				M_real = float(float(N)/p0)
+				added_profs = 2**(int(math.floor(math.log(M_real,2)) + 1)) - M_real
 				if p0==0 or p0 ==1:
 					print 'It tried to fold with period = 0 bin or 1 bin','\n'
 					continue
@@ -120,8 +124,8 @@ def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands)
 				folds_1 = FFA.FFA(xwrap_1)
 				folds_2 = FFA.FFA(xwrap_2)
 					
-				SN_1 = f.simple_SNR(folds_1, sigma_total,w)
-				SN_2 = f.simple_SNR(folds_2, sigma_total,w)
+				SN_1 = f.SNR_func(folds_1, sigma_total,w, added_profs)
+				SN_2 = f.SNR_func(folds_2, sigma_total,w, added_profs)
 
 				j = SN_1 >= SN_tresh
 				k = SN_2 >= SN_tresh
@@ -152,6 +156,8 @@ def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands)
 			print "-            Folding ..."
 			for p0 in P0s2:
 				p0=int(p0)
+				M_real = float(float(N)/p0)
+				added_profs = 2**(int(math.floor(math.log(M_real,2)) + 1)) - M_real
 				if p0==0 or p0 ==1:
 					print 'It tried to fold with period = 0 bin or 1 bin'
 					continue
@@ -166,10 +172,10 @@ def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands)
 				folds_21 = FFA.FFA(xwrap_21)
 				folds_22 = FFA.FFA(xwrap_22)
 
-				SN_11 = f.simple_SNR(folds_11, sigma_total,w)
-				SN_12 = f.simple_SNR(folds_12, sigma_total,w)
-				SN_21 = f.simple_SNR(folds_21, sigma_total,w)
-				SN_22 = f.simple_SNR(folds_22, sigma_total,w)
+				SN_11 = f.SNR_func(folds_11, sigma_total,w, added_profs)
+				SN_12 = f.SNR_func(folds_12, sigma_total,w, added_profs)
+				SN_21 = f.SNR_func(folds_21, sigma_total,w, added_profs)
+				SN_22 = f.SNR_func(folds_22, sigma_total,w, added_profs)
 
 				j = SN_11 >= SN_tresh
 				k = SN_21 >= SN_tresh
@@ -212,6 +218,8 @@ def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands)
 			print "-            Folding ..."
 			for p0 in P0s2:
 				p0=int(p0)
+				M_real = float(float(N)/p0)
+				added_profs = 2**(int(math.floor(math.log(M_real,2)) + 1)) - M_real
 				if p0==0 or p0 ==1:
 					print 'It tried to fold with period = 0 bin or 1 bin'
 					continue
@@ -236,14 +244,14 @@ def ffa_code_stage2(data ,dt ,T, p_min, p_max, SN_tresh, count_lim, name, cands)
 				folds_222 = FFA.FFA(xwrap_222)
 
 
-				SN_111 = f.simple_SNR(folds_111, sigma_total,w)
-				SN_121 = f.simple_SNR(folds_121, sigma_total,w)
-				SN_211 = f.simple_SNR(folds_211, sigma_total,w)
-				SN_221 = f.simple_SNR(folds_221, sigma_total,w)
-				SN_112 = f.simple_SNR(folds_112, sigma_total,w)
-				SN_122 = f.simple_SNR(folds_122, sigma_total,w)
-				SN_212 = f.simple_SNR(folds_212, sigma_total,w)
-				SN_222 = f.simple_SNR(folds_222, sigma_total,w)
+				SN_111 = f.SNR_func(folds_111, sigma_total,w, added_profs)
+				SN_121 = f.SNR_func(folds_121, sigma_total,w, added_profs)
+				SN_211 = f.SNR_func(folds_211, sigma_total,w, added_profs)
+				SN_221 = f.SNR_func(folds_221, sigma_total,w, added_profs)
+				SN_112 = f.SNR_func(folds_112, sigma_total,w, added_profs)
+				SN_122 = f.SNR_func(folds_122, sigma_total,w, added_profs)
+				SN_212 = f.SNR_func(folds_212, sigma_total,w, added_profs)
+				SN_222 = f.SNR_func(folds_222, sigma_total,w, added_profs)
 
 
 				j = SN_111 >= SN_tresh
@@ -327,6 +335,8 @@ def ffa_code_stage3(data ,dt ,T, p_min,p_max, SN_tresh,count_lim,name, cands):
 			print "-            Folding ..."
 			for p0 in P0s3:
 				p0=int(p0)
+				M_real = float(float(N)/p0)
+				added_profs = 2**(int(math.floor(math.log(M_real,2)) + 1)) - M_real
 				if p0==0 or p0 ==1:
 					print 'It tried to fold with period = 0 bin or 1 bin'
 					continue
@@ -339,9 +349,9 @@ def ffa_code_stage3(data ,dt ,T, p_min,p_max, SN_tresh,count_lim,name, cands):
 				folds_2 = FFA.FFA(xwrap_2)
 				folds_3 = FFA.FFA(xwrap_3)
 
-				SN_1 = f.simple_SNR(folds_1, sigma_total,w)
-				SN_2 = f.simple_SNR(folds_2, sigma_total,w)
-				SN_3 = f.simple_SNR(folds_3, sigma_total,w)
+				SN_1 = f.SNR_func(folds_1, sigma_total,w, added_profs)
+				SN_2 = f.SNR_func(folds_2, sigma_total,w, added_profs)
+				SN_3 = f.SNR_func(folds_3, sigma_total,w, added_profs)
 
 				j = SN_1 >= SN_tresh
 				k = SN_2 >= SN_tresh
@@ -380,6 +390,8 @@ def ffa_code_stage3(data ,dt ,T, p_min,p_max, SN_tresh,count_lim,name, cands):
 			print "-            Folding ..."
 			for p0 in P0s3:
 				p0=int(p0)
+				M_real = float(float(N)/p0)
+				added_profs = 2**(int(math.floor(math.log(M_real,2)) + 1)) - M_real
 				if p0==0 or p0 ==1:
 					print 'It tried to fold with period = 0 bin or 1 bin'
 					continue
@@ -404,15 +416,15 @@ def ffa_code_stage3(data ,dt ,T, p_min,p_max, SN_tresh,count_lim,name, cands):
 				folds_23 = FFA.FFA(xwrap_23)
 				folds_33 = FFA.FFA(xwrap_33)
 
-				SN_11 = f.simple_SNR(folds_11, sigma_total,w)
-				SN_21 = f.simple_SNR(folds_21, sigma_total,w)
-				SN_31 = f.simple_SNR(folds_31, sigma_total,w)
-				SN_12 = f.simple_SNR(folds_12, sigma_total,w)
-				SN_22 = f.simple_SNR(folds_22, sigma_total,w)
-				SN_32 = f.simple_SNR(folds_32, sigma_total,w)
-				SN_13 = f.simple_SNR(folds_13, sigma_total,w)
-				SN_23 = f.simple_SNR(folds_23, sigma_total,w)
-				SN_33 = f.simple_SNR(folds_33, sigma_total,w)
+				SN_11 = f.SNR_func(folds_11, sigma_total,w, added_profs)
+				SN_21 = f.SNR_func(folds_21, sigma_total,w, added_profs)
+				SN_31 = f.SNR_func(folds_31, sigma_total,w, added_profs)
+				SN_12 = f.SNR_func(folds_12, sigma_total,w, added_profs)
+				SN_22 = f.SNR_func(folds_22, sigma_total,w, added_profs)
+				SN_32 = f.SNR_func(folds_32, sigma_total,w, added_profs)
+				SN_13 = f.SNR_func(folds_13, sigma_total,w, added_profs)
+				SN_23 = f.SNR_func(folds_23, sigma_total,w, added_profs)
+				SN_33 = f.SNR_func(folds_33, sigma_total,w, added_profs)
 
 				j = SN_11 >= SN_tresh
 				k = SN_21 >= SN_tresh
@@ -484,6 +496,8 @@ def ffa_code_stage3(data ,dt ,T, p_min,p_max, SN_tresh,count_lim,name, cands):
 			print '\n',"-            Folding ..."
 			for p0 in P0s3:
 				p0=int(p0)
+				M_real = float(float(N)/p0)
+				added_profs = 2**(int(math.floor(math.log(M_real,2)) + 1)) - M_real
 				if p0==0 or p0 ==1:
 					print 'It tried to fold with period = 0 bin or 1 bin'
 					continue
@@ -545,33 +559,33 @@ def ffa_code_stage3(data ,dt ,T, p_min,p_max, SN_tresh,count_lim,name, cands):
 				folds_333 = FFA.FFA(xwrap_333)
 			
 
-				SN_111 = f.simple_SNR(folds_111, sigma_total,w)
-				SN_211 = f.simple_SNR(folds_211, sigma_total,w)
-				SN_311 = f.simple_SNR(folds_311, sigma_total,w)
-				SN_121 = f.simple_SNR(folds_121, sigma_total,w)
-				SN_221 = f.simple_SNR(folds_221, sigma_total,w)
-				SN_321 = f.simple_SNR(folds_321, sigma_total,w)
-				SN_131 = f.simple_SNR(folds_131, sigma_total,w)
-				SN_231 = f.simple_SNR(folds_231, sigma_total,w)
-				SN_331 = f.simple_SNR(folds_331, sigma_total,w)
-				SN_112 = f.simple_SNR(folds_112, sigma_total,w)
-				SN_212 = f.simple_SNR(folds_212, sigma_total,w)
-				SN_312 = f.simple_SNR(folds_312, sigma_total,w)
-				SN_122 = f.simple_SNR(folds_122, sigma_total,w)
-				SN_222 = f.simple_SNR(folds_222, sigma_total,w)
-				SN_322 = f.simple_SNR(folds_322, sigma_total,w)
-				SN_132 = f.simple_SNR(folds_132, sigma_total,w)
-				SN_232 = f.simple_SNR(folds_232, sigma_total,w)
-				SN_332 = f.simple_SNR(folds_332, sigma_total,w)
-				SN_113 = f.simple_SNR(folds_113, sigma_total,w)
-				SN_213 = f.simple_SNR(folds_213, sigma_total,w)
-				SN_313 = f.simple_SNR(folds_313, sigma_total,w)
-				SN_123 = f.simple_SNR(folds_123, sigma_total,w)
-				SN_223 = f.simple_SNR(folds_223, sigma_total,w)
-				SN_323 = f.simple_SNR(folds_323, sigma_total,w)
-				SN_133 = f.simple_SNR(folds_133, sigma_total,w)
-				SN_233 = f.simple_SNR(folds_233, sigma_total,w)
-				SN_333 = f.simple_SNR(folds_333, sigma_total,w)
+				SN_111 = f.SNR_func(folds_111, sigma_total,w, added_profs)
+				SN_211 = f.SNR_func(folds_211, sigma_total,w, added_profs)
+				SN_311 = f.SNR_func(folds_311, sigma_total,w, added_profs)
+				SN_121 = f.SNR_func(folds_121, sigma_total,w, added_profs)
+				SN_221 = f.SNR_func(folds_221, sigma_total,w, added_profs)
+				SN_321 = f.SNR_func(folds_321, sigma_total,w, added_profs)
+				SN_131 = f.SNR_func(folds_131, sigma_total,w, added_profs)
+				SN_231 = f.SNR_func(folds_231, sigma_total,w, added_profs)
+				SN_331 = f.SNR_func(folds_331, sigma_total,w, added_profs)
+				SN_112 = f.SNR_func(folds_112, sigma_total,w, added_profs)
+				SN_212 = f.SNR_func(folds_212, sigma_total,w, added_profs)
+				SN_312 = f.SNR_func(folds_312, sigma_total,w, added_profs)
+				SN_122 = f.SNR_func(folds_122, sigma_total,w, added_profs)
+				SN_222 = f.SNR_func(folds_222, sigma_total,w, added_profs)
+				SN_322 = f.SNR_func(folds_322, sigma_total,w, added_profs)
+				SN_132 = f.SNR_func(folds_132, sigma_total,w, added_profs)
+				SN_232 = f.SNR_func(folds_232, sigma_total,w, added_profs)
+				SN_332 = f.SNR_func(folds_332, sigma_total,w, added_profs)
+				SN_113 = f.SNR_func(folds_113, sigma_total,w, added_profs)
+				SN_213 = f.SNR_func(folds_213, sigma_total,w, added_profs)
+				SN_313 = f.SNR_func(folds_313, sigma_total,w, added_profs)
+				SN_123 = f.SNR_func(folds_123, sigma_total,w, added_profs)
+				SN_223 = f.SNR_func(folds_223, sigma_total,w, added_profs)
+				SN_323 = f.SNR_func(folds_323, sigma_total,w, added_profs)
+				SN_133 = f.SNR_func(folds_133, sigma_total,w, added_profs)
+				SN_233 = f.SNR_func(folds_233, sigma_total,w, added_profs)
+				SN_333 = f.SNR_func(folds_333, sigma_total,w, added_profs)
 
 
 				j = SN_111 >= SN_tresh
