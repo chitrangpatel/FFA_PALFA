@@ -197,7 +197,7 @@ def simple_SNR(folds, sigma_total, w):
 	For each M profiles, returns a value of SNR (i.e, output is a list of lenght M)
     """
     M, P0 = folds.shape
-    prof_std = 1.0/(np.sqrt(M)*sigma_total*np.sqrt(w))
+    prof_std = 1.0/(np.sqrt(M)*sigma_total)
     snr = (folds.max(axis=1)-np.median(folds, axis=1))*prof_std
     look_for_nan(snr)
     return snr
