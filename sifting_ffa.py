@@ -55,6 +55,28 @@ def remove_harmonics(candlist, *args, **kwargs):
     return candlist
 
 
+def cmp_freq(self, other):
+    return cmp(self.r, other.r)
+
+def cmp_sigma(self, other):
+    retval = -cmp(self.snr, other.snr)
+    if retval==0:
+        return -cmp(self.snr, other.snr)
+    else:
+        return retval
+
+
+def cmp_snr(self, other):
+    retval = -cmp(self.snr, other.snr)
+    if retval==0:
+        return -cmp(self.snr, other.snr)
+    else:
+        return retval
+
+
+def cmp_dms(self, other):
+    return cmp(float(self[0]), float(other[0]))
+
 def write_candlist(candlist, *args, **kwargs):
     candlist.to_file(*args, **kwargs)
 
