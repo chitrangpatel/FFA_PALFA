@@ -1,7 +1,8 @@
 # FFA_palfa
 Fast Folding Algorithm
 
-**IMPORTANT**
+**IMPORTANT**: 
+
 The codes FFA_cy have been taken from Erik Petigura github (https://github.com/petigura)
 
 
