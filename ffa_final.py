@@ -69,6 +69,7 @@ def final_sifting_ffa(basenm, candfile_list, output_file, zapfn=[]):
 	finf = open(output_file, 'a')
 	ft.write_inf(basenm+'_rfifind',finf,write_DM=False)
 	print 'Wrote ',len(candidates),' final cands in ', output_file
+	return candidates
 
 
 def main():
@@ -89,7 +90,7 @@ def main():
 	candfile_list = glob.glob(basenm+"*_dm*_cands.ffa")
 	zapfn = options.zaplist
 	output_file = basenm+'_cands.ffa'
-	final_sifting_ffa(basenm,candfile_list,output_file, zapfn)
+	ffa_cands = final_sifting_ffa(basenm,candfile_list,output_file, zapfn)
 	
 	
 	
