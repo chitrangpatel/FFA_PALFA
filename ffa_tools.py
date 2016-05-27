@@ -8,7 +8,7 @@ from operator import itemgetter
 import glob
 import subprocess 
 
-import sifting_ffa as sf
+import ffa_sifting
 
 def get_timeseries(beam):
 	""" 
@@ -332,7 +332,7 @@ def apply_sifting(candsfile, output_name):
 	Returns : None
 	Writes the final cands to file
 	"""
-	candidates = sf.read_candidates(candsfile)
+	candidates = ffa_sifting.ffa_read_candidates(candsfile)
 	candidates.remove_duplicate_candidates()
 	candidates.remove_harmonics()
 	print 'Wrote ',len(candidates),' final candidates in ', output_name
