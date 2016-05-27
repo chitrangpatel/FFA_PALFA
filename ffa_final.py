@@ -53,7 +53,7 @@ def final_sifting_ffa(basenm, candfile_list, output_file, zapfn=[]):
 	ftemp.close()
 
 	#sifting
-	dmlist= [re.sub('\_cands.ffa$',"",candfile_list[i]).split('_dm',1)[-1] \
+	dmlist= [re.sub('\_cands.ffa$',"",candfile_list[i]).split('_DM',1)[-1] \
 				      for i in range(len(candfile_list))]
 	candidates = ffa_sifting.ffa_read_candidates(candfile_for_sifting)
 	if zapfn != None:
@@ -87,7 +87,7 @@ def main():
 	options, args = parser.parse_args()
 	basenm_inf = sys.argv[1]
 	basenm = re.sub('\_rfifind.inf$',"",basenm_inf)
-	candfile_list = glob.glob(basenm+"*_dm*_cands.ffa")
+	candfile_list = glob.glob(basenm+"*_DM*_cands.ffa")
 	zapfn = options.zaplist
 	output_file = basenm+'_cands.ffa'
 	ffa_cands = final_sifting_ffa(basenm,candfile_list,output_file, zapfn)
