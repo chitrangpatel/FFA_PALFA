@@ -24,8 +24,9 @@ def main():
 	Runs the Fast Folding Algorithm on a de-dispersed time series
 	The parameters are : the mininum duty-cycle to look for,
 			     the Signal-to-Noise treshold to select candidates 
-			     the ranges of trial periods
-			     the minimum sampling intervals corresponding to those period ranges
+			     the ranges of trial periods (set in config file)
+			     the minimum sampling intervals corresponding to 
+			             those period ranges (set in config file)
 	
 	"""
 
@@ -38,23 +39,12 @@ def main():
 			"Options are: 0.5, 1., 1.5. It multiplies the list "\
 			"of minimum sampling intervals that has to be tested in each "\
 			"subranges of periods by 2 (mindc=1) or 3 (mindc =1.5)")
-
-
-	parser.add_option('--p_ranges',dest='p_ranges', \
-		help="Period subranges for the FFA. Default is set in config. file.")
-
-	parser.add_option('--dt_list',dest='dt_list', \
-		help="List of minimum sampling interval correspondings to each "\
-		    "period subranges (p_ranges) for the FFA. "\
-			"Default is set in config. file.")
 	parser.add_option('--SN_tresh',dest='SN_tresh', \
 		help="Signal-to-noise treshold for picking candidates")
 
 
 	options, args = parser.parse_args()
 	mindc = options.mindc
-	p_ranges = options.p_ranges
-	dt_list = options.dt_list
 	SN_tresh = options.SN_tresh
 
 	ffa_time=time.time()
@@ -90,8 +80,8 @@ def main():
 
 	cfg = ConfigParser.ConfigParser()
 	cfg.read('config_ffa.cfg')
-	if p_ranges ==None : p_ranges = eval(cfg.get('FFA_settings','p_ranges'))
-	if dt_list ==None  : dt_list = eval(cfg.get('FFA_settings','dt_list'))
+	p_ranges = eval(cfg.get('FFA_settings','p_ranges'))
+	dt_list = eval(cfg.get('FFA_settings','dt_list'))
 	if SN_tresh ==None : SN_tresh = float(cfg.get('FFA_settings','SN_tresh'))
 	if mindc ==None    : mindc = ast.literal_eval(cfg.get('FFA_settings','mindc'))
 
