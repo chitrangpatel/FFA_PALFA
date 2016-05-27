@@ -33,9 +33,9 @@ def main():
                         version="Emilie Parent (Spring, 2016)", \
                         description="Applies the Fast Folding Algorithm on "\
 				" a de-dispersed time series")
-	parser.add_option('--mindc',dest='mindc',type = 'int', \
+	parser.add_option('--mindc',dest='mindc',type = 'float', \
 		help="Minimum duty-cycle to look for. Default is 0.5%. "\
-			"Options are: 0.5, 1, 1.5. It multiplies the list "\
+			"Options are: 0.5, 1., 1.5. It multiplies the list "\
 			"of minimum sampling intervals that has to be tested in each "\
 			"subranges of periods by 2 (mindc=1) or 3 (mindc =1.5)")
 
