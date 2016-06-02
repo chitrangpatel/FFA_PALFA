@@ -442,6 +442,7 @@ def ffa_candlist_from_candfile(filename, trackbad=False, trackdupes=False):
             dt = float(line.split()[-1])
 	if line.startswith(" Dispersion measure (cm-3 pc)"):
 	    dm = float(line.split()[-1])
+	    DMstr = str(dm)
     tobs = numsamp * dt
     # Go back to the start of the file to read the candidates
     candfile.seek(0)
