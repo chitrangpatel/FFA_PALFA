@@ -18,7 +18,7 @@ import ffa_stages as fs
 import FFA_cy as FFA
 
 
-
+time_total = time.time()
 def main():
 	"""
 	Runs the Fast Folding Algorithm on a de-dispersed time series
@@ -137,7 +137,7 @@ def main():
 			ts = ft.downsample(ts, dwn)
 			sigma_total=sigma_total*np.sqrt(dwn)
 			dt = T/len(ts)
-		print " Folding, period range of ", p_ranges[num], " ..."
+		print "  Folding, period range of ", p_ranges[num], " ..."
 		all_SNs_x1, all_Ps_x1, dts_x1 = fs.ffa_code_stage1(ts, dt,T, sigma_total,p_ranges[num][0],\
 			p_ranges[num][1], count_lim,name)
 		all_SNs1.append(all_SNs_x1), all_Ps1.append(all_Ps_x1), dts_1.append(dts_x1)
@@ -191,7 +191,7 @@ def main():
 	    	Ps27.extend(all_Ps_3[i][2]), dt27s.extend(dts_3[i][2])
 	Ps1, SNs1 = np.concatenate(Ps1), np.concatenate(SNs1)
 
-	print "FFA finished for ",name
+	print "Folding done "
 	time_tot =  (time.time() - ffa_time)
 	print ( " --- %.7s seconds is the FFA time ---" % time_tot),'\n'
 
@@ -249,6 +249,8 @@ def main():
 					scale27, scale27, scale27, scale27, scale27, scale27, scale27, scale27, 
 					scale27, scale27, scale27, scale27, scale27, scale27, scale27, scale27, 
 					scale27, scale27, scale27]
+	
+	# ======================   Picking Candidates	==================================
 	print "Picking candidates ..."
 	# write cands: only True when you get to the end. 
 	write_cands, write_cands[-1] = [False]*len(list_SNS), True
@@ -256,18 +258,15 @@ def main():
 	# Make all S/Ns uniform
 	list_SNS = [(list_SNS[i] -list_locs[i])/list_scales[i] for i in range(len(list_SNS))]
 	
-	# ======================   Picking Candidates	==================================
-	
 	j = [list_SNS[i] >= SN_tresh for i in range(len(list_SNS))]
 	good_id = [np.nonzero(j[i]) for i in range(len(j))]
 	good_id = np.concatenate(np.array(good_id))
-	good_p, good_sn, good_dt = [],[],[]
-	for i in range(len(good_id)):
-		for k in good_id[i]:
-			good_p.append(list_PS[i][k])
-			good_sn.append(list_SNS[i][k])
-			good_dt.append(np.array(list_DTS)[i][k])
-	
+	good_p = [func(list_PS[i],good_id[i]) for i in range(len(good_id))]
+	good_sn = [func(list_SNS[i],good_id[i]) for i in range(len(good_id))]
+	good_dt = np.array([func(list_DTS[i],good_id[i]) for i in range(len(good_id))])
+	good_p  = np.concatenate(good_p)
+	good_sn = np.concatenate(good_sn)
+	good_dt = np.concatenate(good_dt)
 	good_p = [round(good_p[i],4) for i in range(len(good_p))]
 	good_p = [round(good_sn[i],4) for i in range(len(good_sn))]
 	good_p = [round(good_dt[i],5) for i in range(len(good_dt))]
@@ -295,7 +294,7 @@ def main():
 	
 	
 	print "Completed ", name		
-
+        print "Total time for FFA : ",time.time()-time_total
 
 if __name__=='__main__':
     main()
