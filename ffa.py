@@ -17,7 +17,6 @@ import ffa_tools as ft
 import ffa_stages as fs
 import FFA_cy as FFA
 
-
 time_total = time.time()
 
 def func(List,IDs):
@@ -257,6 +256,7 @@ def main():
 	
 	# ======================   Picking Candidates	==================================
 	print "Picking candidates ..."
+
 	# write cands: only True when you get to the end. 
 	write_cands, write_cands[-1] = [False]*len(list_SNS), True
 	
@@ -268,18 +268,18 @@ def main():
 	good_id = np.concatenate(np.array(good_id))
 	good_p = [func(list_PS[i],good_id[i]) for i in range(len(good_id))]
 	good_sn = [func(list_SNS[i],good_id[i]) for i in range(len(good_id))]
-	good_dt = np.array([func(list_DTS[i],good_id[i]) for i in range(len(good_id))])
+	good_dt = [func(list_DTS[i],good_id[i]) for i in range(len(good_id))]
 	good_p  = np.concatenate(good_p)
 	good_sn = np.concatenate(good_sn)
 	good_dt = np.concatenate(good_dt)
 	good_p = [round(good_p[i],4) for i in range(len(good_p))]
-	good_p = [round(good_sn[i],4) for i in range(len(good_sn))]
-	good_p = [round(good_dt[i],5) for i in range(len(good_dt))]
-	
+	good_sn = [round(good_sn[i],4) for i in range(len(good_sn))]
+	good_dt = [round(good_dt[i],5) for i in range(len(good_dt))]
+
 	cands = ft.ffa_cands()
 	cands.add_cand(good_p,good_sn,good_dt)
 	ft.cands_to_file(cands,name,'_precands.ffa')
-	
+
 	# Check if candidates were selected
 	if len(cands.periods)==0:
 		print "No cands with S/N > ",SN_tresh," were detected"
@@ -291,15 +291,14 @@ def main():
 	candsfile_list = open(candsfile_str ,'w')
 	candsfile_list.write(name+'_precands.ffa')
 	candsfile_list.close()
-	
 	if os.stat(name+'_precands.ffa').st_size >0:
-		ft.apply_sifting(candsfile_str,name+'_cands.ffa')
+		ft.apply_sifting(candsfile_str,name+'_cands.ffa')	
+
 	
+	print "Completed ", name
+	print "Total time for FFA: ",time.time()-time_total		
 	subprocess.call(["rm",candsfile_str])
 	subprocess.call(["rm",name+'_precands.ffa'])
-	print "Completed ", name		
-        print "Total time for FFA : ",time.time()-time_total
 
 if __name__=='__main__':
     main()
-
