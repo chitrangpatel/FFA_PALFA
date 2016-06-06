@@ -293,11 +293,10 @@ def main():
 	candsfile_list.close()
 	
 	if os.stat(name+'_precands.ffa').st_size >0:
-		#name = "_dm".join(name.split("_dm")[:-1])
 		ft.apply_sifting(candsfile_str,name+'_cands.ffa')
-		subprocess.call(["rm",candsfile_str])
 	
-	
+	subprocess.call(["rm",candsfile_str])
+	subprocess.call(["rm",name+'_precands.ffa'])
 	print "Completed ", name		
         print "Total time for FFA : ",time.time()-time_total
 
