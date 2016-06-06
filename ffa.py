@@ -19,6 +19,11 @@ import FFA_cy as FFA
 
 
 time_total = time.time()
+
+def func(List,IDs):
+	return [List[i] for i in IDs]
+	
+	
 def main():
 	"""
 	Runs the Fast Folding Algorithm on a de-dispersed time series
