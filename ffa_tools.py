@@ -271,7 +271,6 @@ def forced_dws(data,factor):
 
 
 #==================	   Candidates related functions	        ==================
-
 class ffa_cands(object):
     """
     FFA candidates has 3 parameters: 
@@ -337,6 +336,8 @@ def apply_sifting(candsfile, output_name):
 	candidates.remove_harmonics()
 	print 'Wrote ',len(candidates),' final candidates in ', output_name
 	candidates.to_file(candfilenm = output_name)
+
+	
 
 	
 
