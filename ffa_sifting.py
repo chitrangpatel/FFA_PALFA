@@ -10,10 +10,8 @@ from presto import candidate_sigma
 import sifting
 
 """
-Slightly modified version of sifting.py (PRESTO).
-Candlist and Candidate classes have been changed.
-Same for read_candidates.
-Functions not described here are the same as in sifting.py (presto)
+Slightly modified version of sifting.py (PRESTO). 
+
 """
 # Longest period candidates to consider (s)
 long_period = 30.0
@@ -25,14 +23,13 @@ short_period = 0.05
 fund_re = re.compile("^\d")
 harms_re = re.compile("^[ ]\d")
 DM_re = re.compile("DM(\d+\.\d{2})")
+prelim_reject = False
 
 
 def cmp_snr(self, other):
     retval = -cmp(self.snr, other.snr)
     return retval
-    
-    
-#===================	FFACandidate	======================= 
+#==========================================
 
 class FFACandidate(sifting.Candidate):
     def __init__(self,candnum, p, snr, dt ,binn, dm, DMstr, filename, T, final_cands=False):
@@ -57,7 +54,6 @@ class FFACandidate(sifting.Candidate):
         self.DM = float(dm)
 	self.hits = []
         self.note = ""
-
     def add_as_hit(self, other):
         self.hits.extend([(other.DM,other.snr,other.sigma)])
 
@@ -65,7 +61,7 @@ class FFACandidate(sifting.Candidate):
         cand = self.filename + '    ' + `self.candnum`
         return "%-65s   %3.1f  %5.2f   %5.1f   %5.1f"% (cand, self.p*1000, self.snr, self.DM, self.dt*1000)
 
-#===================	FFACandlist	======================= 
+#==========================================
 
 class FFACandlist(sifting.Candlist):
     def __init__(self, cands=None, trackbad=False, trackdupes=False):
@@ -402,7 +398,7 @@ class FFACandlist(sifting.Candlist):
                        "dt (ms)".center(18) +"\n")
         for goodcand in self.cands:
             candfile.write("%s \n" % (str(goodcand)))
-
+	
         if candfilenm is not None:
 	    candfile.close()
 	    candfile2 = open(candfilenm, "r")
@@ -421,14 +417,12 @@ class FFACandlist(sifting.Candlist):
 		 "	SNR".center(2) +"	DM".center(24) + "dt (ms)".center(14) +'\n')
     		for el in lines:
         		fout.write('{0}\n'.format(' '.join(el)))
-			
+	    	
 	    fout.close()
-	    candfile.close()
-            
-            
+	    candfile2.close()
             
 
-#===================	Reading in candidates	======================= 
+#==========================================
 
 
 def ffa_candlist_from_candfile(filename, trackbad=False, trackdupes=False):
@@ -476,7 +470,7 @@ def ffa_candlist_from_candfile(filename, trackbad=False, trackdupes=False):
 	    	if DM_re.search(filename) == None and (not final_cands): 
 				DMstr = '9999999.99'
             	if (not DM_re.search(filename) == None) and final_cands: 
-				DMstr = DM_re.search(filename).groups()[0]	
+				DMstr = DM_re.search(filename).groups()[0]
             	cands.append(FFACandidate(candnum,p, snr, dt,binn, dm,DMstr, filename, tobs, final_cands))
 		i+=1 
     candfile.close()
@@ -514,4 +508,3 @@ def ffa_read_candidates(filenms, prelim_reject=True, track=False):
     else:
         print "Error:  There are no candidate files to read!"
     return candlist
-
