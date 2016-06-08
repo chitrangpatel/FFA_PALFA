@@ -284,9 +284,9 @@ class ffa_cands(object):
 	self.dts = np.array([])
 
     def add_cand(self,p,SNR,dt):
-	self.periods = np.insert(self.periods,0, p)
-	self.SNRs = np.insert(self.SNRs,0, SNR)
-	self.dts = np.insert(self.dts,0,dt)
+	self.periods = np.append(self.periods, p)
+	self.SNRs = np.append(self.SNRs, SNR)
+	self.dts = np.append(self.dts,dt)
 
     def print_content(self):
 	print "  Period : ", self.periods,  ", SNR: ",\
