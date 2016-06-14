@@ -61,7 +61,10 @@ def final_sifting_ffa(basenm, candfile_list, output_file, zapfn=[]):
 		candidates.reject_knownbirds(known_birds_f)
 	candidates.remove_duplicate_candidates()
 	candidates.remove_DM_problems(numdms=2, dmlist=dmlist, low_DM_cutoff = 1 )
-	candidates.remove_harmonics()
+	try: 
+		candidates.remove_harmonics()
+	except: 
+		print "No more candidates to sift."
 	candidates.to_file(candfilenm = output_file)
 
 	#candfile_for_sifting is useless after sifting; delete it
