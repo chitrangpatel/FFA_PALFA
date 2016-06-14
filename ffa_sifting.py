@@ -406,6 +406,7 @@ class FFACandlist(sifting.Candlist):
 	    lines = [line.split() for line in candfile2]
 	    for l in range(len(lines)):
 		lines[l][0] = re.sub('\:$',"",lines[l][0])
+		lines[l][0] = lines[l][0] +':'+str(l+1)
 		del lines[l][1]
 		lines[l][1] = '\t'+'\t'+'\t  '+lines[l][1]
 		lines[l][2] = '\t'+'\t'+lines[l][2]
