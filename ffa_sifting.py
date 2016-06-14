@@ -377,6 +377,7 @@ class FFACandlist(sifting.Candlist):
             if known_bird:
                 self.mark_as_bad(ii, 'knownbirds')
                 continue
+
 	
     def to_file(self, candfilenm=None):
         """Write Candlist to file (or stdout).
@@ -393,35 +394,34 @@ class FFACandlist(sifting.Candlist):
         else:
             candfile = open(candfilenm, "w")
         if os.stat(candfilenm).st_size == 0 :
-		candfile.write("#" + "file:".center(20)+"candnum".center(30) + \
-	"	 	     P(ms)".center(9) + "SNR".center(16) + "DM".center(2) + \
-                       "dt (ms)".center(18) +"\n")
+		candfile.write("#" + "file:".center(70)+"candnum".center(40) + \
+	"P (ms)".center(40) + "SNR".center(15) + "DM".center(15) + \
+                       "dt (ms)".center(15) +"\n")
         for goodcand in self.cands:
             candfile.write("%s \n" % (str(goodcand)))
-	
         if candfilenm is not None:
 	    candfile.close()
 	    candfile2 = open(candfilenm, "r")
 	    next(candfile2)
 	    lines = [line.split() for line in candfile2]
+	    length = len(lines[-1][0])
 	    for l in range(len(lines)):
 		lines[l][0] = re.sub('\:$',"",lines[l][0])
 		lines[l][0] = lines[l][0] +':'+str(l+1)
 		del lines[l][1]
-		lines[l][1] = '\t'+'\t'+'\t  '+lines[l][1]
-		lines[l][2] = '\t'+'\t'+lines[l][2]
-		lines[l][3] = '\t'+'\t'+lines[l][3]
-		lines[l][4] = '\t'+'\t'+lines[l][4]
+		lines[l][1] = lines[l][1].center(40)
+		lines[l][2] = lines[l][2].center(15)
+		lines[l][3] = lines[l][3].center(15)
+		lines[l][4] = lines[l][4].center(15)
 	    candfile2 = open(candfilenm, "w")
 	    with open(candfilenm, 'w') as fout:
-		fout.write("#" + "file".center(20)+"					  P(ms)".center(40) +
-		 "	SNR".center(2) +"	DM".center(24) + "dt (ms)".center(14) +'\n')
+		fout.write("#" + "file:candnum".center(length)+" P(ms)".center(40) +
+		 "	SNR".center(15) +"	DM".center(15) + "dt(ms)".center(15) +'\n')
     		for el in lines:
         		fout.write('{0}\n'.format(' '.join(el)))
 	    	
 	    fout.close()
 	    candfile2.close()
-            
 
 #==========================================
 
