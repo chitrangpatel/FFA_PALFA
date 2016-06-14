@@ -396,32 +396,34 @@ class FFACandlist(sifting.Candlist):
         if os.stat(candfilenm).st_size == 0 :
 		candfile.write("#" + "file:".center(70)+"candnum".center(40) + \
 	"P (ms)".center(40) + "SNR".center(15) + "DM".center(15) + \
-                       "dt (ms)".center(15) +"\n")
+                       "dt (ms)".center(15) + 'numhits'.center(15)+"\n")
         for goodcand in self.cands:
-            candfile.write("%s \n" % (str(goodcand)))
+            candfile.write("%s \n" % (str(goodcand)+('('+str(len(goodcand.hits))+')').center(15) ))
         if candfilenm is not None:
 	    candfile.close()
 	    candfile2 = open(candfilenm, "r")
 	    next(candfile2)
 	    lines = [line.split() for line in candfile2]
-	    length = len(lines[-1][0])
 	    for l in range(len(lines)):
 		lines[l][0] = re.sub('\:$',"",lines[l][0])
-		lines[l][0] = lines[l][0] +':'+str(l+1)
+		lines[l][0] = lines[l][0] +':'+str(l+1)+'\t'
 		del lines[l][1]
-		lines[l][1] = lines[l][1].center(40)
-		lines[l][2] = lines[l][2].center(15)
-		lines[l][3] = lines[l][3].center(15)
-		lines[l][4] = lines[l][4].center(15)
+		lines[l][1] = (lines[l][1]).center(40)
+		lines[l][2] = (lines[l][2]).center(15)
+		lines[l][3] = (lines[l][3]).center(15)
+		lines[l][4] = (lines[l][4]).center(15)
+		lines[l][5] = (lines[l][5]).center(15)
+	    length = len(lines[-1][0])
 	    candfile2 = open(candfilenm, "w")
 	    with open(candfilenm, 'w') as fout:
-		fout.write("#" + "file:candnum".center(length)+" P(ms)".center(40) +
-		 "	SNR".center(15) +"	DM".center(15) + "dt(ms)".center(15) +'\n')
+		fout.write("#" + "file:candnum".center(length)+"  P(ms)".center(41) +
+		 ("SNR").center(20) +("DM").center(14) + ("dt(ms)").center(18)+ ('numhits').center(12) +'\n')
     		for el in lines:
         		fout.write('{0}\n'.format(' '.join(el)))
 	    	
 	    fout.close()
 	    candfile2.close()
+            
 
 #==========================================
 
