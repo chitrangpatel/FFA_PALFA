@@ -39,10 +39,8 @@ def final_sifting_ffa(basenm, candfile_list, output_file, zapfn=[]):
 					l[3].center(24) + l[4].center(24) +'\n'
 			fout.write(string)
 	#writes information at the end of output_file
-	print fout
 	ft.write_inf(basenm+'_rfifind',fout,write_DM=False)
 	fout.close()
-	sys.exit
 	# sifting need a file that contains the list of files to sift 
 	# only one file in this file, in our case
 	# candfile_for_sifting has the file on which sifting must be applied 
@@ -65,6 +63,7 @@ def final_sifting_ffa(basenm, candfile_list, output_file, zapfn=[]):
 		candidates.remove_harmonics()
 	except: 
 		print "No more candidates to sift."
+		
 	candidates.to_file(candfilenm = output_file)
 
 	#candfile_for_sifting is useless after sifting; delete it
