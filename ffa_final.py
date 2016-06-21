@@ -58,7 +58,7 @@ def final_sifting_ffa(basenm, candfile_list, output_file, zapfn=[]):
 		known_birds_f = tuple(get_zaplist(zapfn))
 		candidates.reject_knownbirds(known_birds_f)
 	candidates.remove_duplicate_candidates()
-	candidates.remove_DM_problems(numdms=2, dmlist=dmlist, low_DM_cutoff = 1 )
+	candidates.remove_DM_problems(numdms=2, dmlist=dmlist, low_DM_cutoff = 2.0 )
 	try: 
 		candidates.remove_harmonics()
 	except: 
