@@ -44,12 +44,21 @@ def main():
 			"of minimum sampling intervals that has to be tested in each "\
 			"subranges of periods by 2 (mindc=1) or 3 (mindc =1.5)")
 	parser.add_option('--SN_tresh',dest='SN_tresh', \
-		help="Signal-to-noise treshold for picking candidates")
+			help="Signal-to-noise treshold for picking candidates")
+
+        parser.add_option('--periodograms',dest='periodograms', \
+         		action='store_true',  help="Produces periodograms "\
+			"for few different duty cycles, default is False")
+
+
+
+
 
 
 	options, args = parser.parse_args()
 	mindc = options.mindc
 	SN_tresh = options.SN_tresh
+	periodograms = options.periodograms 
 
 	ffa_time=time.time()
 	# ------------- 	Declare list variable    ------------------
@@ -88,7 +97,7 @@ def main():
 	dt_list = eval(cfg.get('FFA_settings','dt_list'))
 	if SN_tresh ==None : SN_tresh = float(cfg.get('FFA_settings','SN_tresh'))
 	if mindc ==None    : mindc = ast.literal_eval(cfg.get('FFA_settings','mindc'))
-
+	if periodograms ==None: periodograms = False
 	
 	# ------------- 	Select beam	------------------
 	beam = sys.argv[1]
@@ -299,6 +308,53 @@ def main():
 	print "Total time for FFA: ",time.time()-time_total		
 	subprocess.call(["rm",candsfile_str])
 	subprocess.call(["rm",name+'_precands.ffa'])
+	
+	# Produces periodograms for few duty cycles
+	if periodograms :
+		plt.figure(figsize=(20,10))
+		plt.title(name)
+		ymin=0
+		ymax = np.array([list_SNS[0].max(), list_SNS[1].max(), list_SNS[2].max(), list_SNS[10].max(),\
+			list_SNS[12].max(), list_SNS[15].max(), list_SNS[18].max()]).max()
+		
+		plt.subplot(311)
+		# sampling interval : initial
+		plt.plot(Ps1,list_SNS[0],color='k',linewidth=1.3,label='No Downsample')
+		plt.ylabel(' S/N ' ,fontsize=20)
+		plt.xlim(xmin=0.1,xmax=30)
+		plt.ylim(ymin,ymax)
+		plt.xticks(fontsize=20)
+		plt.yticks(fontsize=20)
+		plt.legend(frameon=False,prop={'size':10})
+	
+		plt.subplot(312)
+		# sampling interval : 2X initial
+		plt.plot(Ps2,list_SNS[1],color='blue',linewidth=1.0,label='Downsample x2 (phase 1)')
+		plt.plot(Ps2,list_SNS[2],color='steelblue',linewidth=1.0,label='Downsample x2 (phase 2)')
+		plt.ylabel(' S/N ' ,fontsize=20)
+		plt.xlim(xmin=0.1,xmax=30)
+		plt.ylim(ymin,ymax)
+		plt.xticks(fontsize=20)
+		plt.yticks(fontsize=20)
+		plt.legend(frameon=False,prop={'size':10})
+	
+		plt.subplot(313)
+		# sampling interval : 9X initial
+		plt.plot(Ps9,list_SNS[10],color='r',linewidth=1.0,label='Downsample x9 (phase 1)')
+		plt.plot(Ps9,list_SNS[12],color='indianred',linewidth=1.0,label='Downsample x9 (phase 3)')
+		plt.plot(Ps9,list_SNS[15],color='tomato',linewidth=1.0,label='Downsample x9 (phase 6)')
+		plt.plot(Ps9,list_SNS[18],color='maroon',linewidth=1.0,label='Downsample x9 (phase 9)')
+		plt.ylabel(' S/N ' ,fontsize=20)
+		plt.xlabel('Period (s)',fontsize=20)
+		plt.xlim(xmin=0.1,xmax=30)
+		plt.ylim(ymin,ymax)
+		plt.xticks(fontsize=20)
+		plt.yticks(fontsize=20)
+		plt.legend(frameon=False,prop={'size':10})
+
+		plt.savefig(name+'.png')
+		print "Periodogram available : ", name+'.png'
+
 
 if __name__=='__main__':
     main()
