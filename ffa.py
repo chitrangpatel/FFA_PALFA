@@ -46,7 +46,7 @@ def main():
 	parser.add_option('--SN_tresh',dest='SN_tresh', \
 			help="Signal-to-noise treshold for picking candidates")
 
-        parser.add_option('--periodograms',dest='periodograms', \
+        parser.add_option('--plot',dest='periodograms', \
          		action='store_true',  help="Produces periodograms "\
 			"for few different duty cycles, default is False")
 
