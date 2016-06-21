@@ -308,12 +308,13 @@ def main():
 	# Produces periodograms for few duty cycles
 	if periodograms :
 		plt.figure(figsize=(20,10))
-		plt.title(name)
+	
 		ymin=0
 		ymax = np.array([list_SNS[0].max(), list_SNS[1].max(), list_SNS[2].max(), list_SNS[10].max(),\
 			list_SNS[12].max(), list_SNS[15].max(), list_SNS[18].max()]).max()
 		
 		plt.subplot(311)
+		plt.suptitle("Periodograms"+'\n'+name)
 		# sampling interval : initial
 		plt.plot(Ps1,list_SNS[0],color='k',linewidth=1.3,label='No Downsample')
 		plt.ylabel(' S/N ' ,fontsize=20)
