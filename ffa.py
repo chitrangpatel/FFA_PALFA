@@ -51,10 +51,6 @@ def main():
 			"for few different duty cycles, default is False")
 
 
-
-
-
-
 	options, args = parser.parse_args()
 	mindc = options.mindc
 	SN_tresh = options.SN_tresh
@@ -152,13 +148,13 @@ def main():
 			dt = T/len(ts)
 		print "  Folding, period range of ", p_ranges[num], " ..."
 		all_SNs_x1, all_Ps_x1, dts_x1 = fs.ffa_code_stage1(ts, dt,T, sigma_total,p_ranges[num][0],\
-			p_ranges[num][1], count_lim,name)
+				p_ranges[num][1], count_lim,name)
 		all_SNs1.append(all_SNs_x1), all_Ps1.append(all_Ps_x1), dts_1.append(dts_x1)
 		all_SNs_x2, all_Ps_x2 , dts_x2 = fs.ffa_code_stage2(ts, dt,T, sigma_total,p_ranges[num][0],\
-			p_ranges[num][1], count_lim,name)
+				p_ranges[num][1], count_lim,name)
 		all_SNs_2.append(all_SNs_x2), all_Ps_2.append(all_Ps_x2), dts_2.append(dts_x2)
 		all_SNs_x3, all_Ps_x3 , dts_x3 = fs.ffa_code_stage3(ts, dt,T, sigma_total,p_ranges[num][0],\
-			p_ranges[num][1], count_lim,name)
+				p_ranges[num][1], count_lim,name)
 		all_SNs_3.append(all_SNs_x3), all_Ps_3.append(all_Ps_x3), dts_3.append(dts_x3)
 	
 	
