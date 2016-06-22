@@ -4,7 +4,7 @@ import math
 import time
 import sys
 import os
-import ConfigParser
+#import ConfigParser
 import ast
 import re
 import matplotlib.pyplot as plt
@@ -82,12 +82,19 @@ def main():
 	
 	# ------------- 	Read configuration file		------------------
 
-	cfg = ConfigParser.ConfigParser()
-	cfg.read('config_ffa.cfg')
-	p_ranges = eval(cfg.get('FFA_settings','p_ranges'))
-	dt_list = eval(cfg.get('FFA_settings','dt_list'))
-	if SN_tresh ==None : SN_tresh = float(cfg.get('FFA_settings','SN_tresh'))
-	if mindc ==None    : mindc = ast.literal_eval(cfg.get('FFA_settings','mindc'))
+	#cfg = ConfigParser.ConfigParser()
+	#cfg.read('config_ffa.cfg')
+	#p_ranges = eval(cfg.get('FFA_settings','p_ranges'))
+	#dt_list = eval(cfg.get('FFA_settings','dt_list'))
+	#if SN_tresh ==None : SN_tresh = float(cfg.get('FFA_settings','SN_tresh'))
+	#if mindc ==None    : mindc = ast.literal_eval(cfg.get('FFA_settings','mindc'))
+	
+	import Config_ffa
+	p_ranges = Config_ffa.p_ranges
+	dt_list = Config_ffa.dt_list
+	if SN_tresh ==None : SN_tresh = Config_ffa.SN_tresh
+	if mindc ==None    : mindc = Config_ffa.mindc
+
 
 	
 	# ------------- 	Select beam	------------------
