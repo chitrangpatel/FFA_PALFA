@@ -4,7 +4,6 @@ import math
 import time
 import sys
 import os
-#import ConfigParser
 import ast
 import re
 import matplotlib.pyplot as plt
@@ -44,12 +43,17 @@ def main():
 			"of minimum sampling intervals that has to be tested in each "\
 			"subranges of periods by 2 (mindc=1) or 3 (mindc =1.5)")
 	parser.add_option('--SN_tresh',dest='SN_tresh', \
-		help="Signal-to-noise treshold for picking candidates")
+			help="Signal-to-noise treshold for picking candidates")
+
+        parser.add_option('--plot',dest='periodograms', \
+         		action='store_true',  help="Produces periodograms "\
+			"for few different duty cycles, default is False")
 
 
 	options, args = parser.parse_args()
 	mindc = options.mindc
 	SN_tresh = options.SN_tresh
+	periodograms = options.periodograms 
 
 	ffa_time=time.time()
 	# ------------- 	Declare list variable    ------------------
@@ -82,20 +86,12 @@ def main():
 	
 	# ------------- 	Read configuration file		------------------
 
-	#cfg = ConfigParser.ConfigParser()
-	#cfg.read('config_ffa.cfg')
-	#p_ranges = eval(cfg.get('FFA_settings','p_ranges'))
-	#dt_list = eval(cfg.get('FFA_settings','dt_list'))
-	#if SN_tresh ==None : SN_tresh = float(cfg.get('FFA_settings','SN_tresh'))
-	#if mindc ==None    : mindc = ast.literal_eval(cfg.get('FFA_settings','mindc'))
-	
 	import Config_ffa
 	p_ranges = Config_ffa.p_ranges
 	dt_list = Config_ffa.dt_list
 	if SN_tresh ==None : SN_tresh = Config_ffa.SN_tresh
 	if mindc ==None    : mindc = Config_ffa.mindc
-
-
+	if periodograms ==None: periodograms = False
 	
 	# ------------- 	Select beam	------------------
 	beam = sys.argv[1]
@@ -150,13 +146,13 @@ def main():
 			dt = T/len(ts)
 		print "  Folding, period range of ", p_ranges[num], " ..."
 		all_SNs_x1, all_Ps_x1, dts_x1 = fs.ffa_code_stage1(ts, dt,T, sigma_total,p_ranges[num][0],\
-			p_ranges[num][1], count_lim,name)
+				p_ranges[num][1], count_lim,name)
 		all_SNs1.append(all_SNs_x1), all_Ps1.append(all_Ps_x1), dts_1.append(dts_x1)
 		all_SNs_x2, all_Ps_x2 , dts_x2 = fs.ffa_code_stage2(ts, dt,T, sigma_total,p_ranges[num][0],\
-			p_ranges[num][1], count_lim,name)
+				p_ranges[num][1], count_lim,name)
 		all_SNs_2.append(all_SNs_x2), all_Ps_2.append(all_Ps_x2), dts_2.append(dts_x2)
 		all_SNs_x3, all_Ps_x3 , dts_x3 = fs.ffa_code_stage3(ts, dt,T, sigma_total,p_ranges[num][0],\
-			p_ranges[num][1], count_lim,name)
+				p_ranges[num][1], count_lim,name)
 		all_SNs_3.append(all_SNs_x3), all_Ps_3.append(all_Ps_x3), dts_3.append(dts_x3)
 	
 	
@@ -306,6 +302,54 @@ def main():
 	print "Total time for FFA: ",time.time()-time_total		
 	subprocess.call(["rm",candsfile_str])
 	subprocess.call(["rm",name+'_precands.ffa'])
+	
+	# Produces periodograms for few duty cycles
+	if periodograms :
+		plt.figure(figsize=(20,10))
+	
+		ymin=0
+		ymax = np.array([list_SNS[0].max(), list_SNS[1].max(), list_SNS[2].max(), list_SNS[10].max(),\
+			list_SNS[12].max(), list_SNS[15].max(), list_SNS[18].max()]).max()
+		
+		plt.subplot(311)
+		plt.suptitle("Periodograms"+'\n'+name)
+		# sampling interval : initial
+		plt.plot(Ps1,list_SNS[0],color='k',linewidth=1.3,label='No Downsample')
+		plt.ylabel(' S/N ' ,fontsize=20)
+		plt.xlim(xmin=0.1,xmax=30)
+		plt.ylim(ymin,ymax)
+		plt.xticks(fontsize=20)
+		plt.yticks(fontsize=20)
+		plt.legend(frameon=False,prop={'size':10})
+	
+		plt.subplot(312)
+		# sampling interval : 2X initial
+		plt.plot(Ps2,list_SNS[1],color='blue',linewidth=1.0,label='Downsample x2 (phase 1)')
+		plt.plot(Ps2,list_SNS[2],color='steelblue',linewidth=1.0,label='Downsample x2 (phase 2)')
+		plt.ylabel(' S/N ' ,fontsize=20)
+		plt.xlim(xmin=0.1,xmax=30)
+		plt.ylim(ymin,ymax)
+		plt.xticks(fontsize=20)
+		plt.yticks(fontsize=20)
+		plt.legend(frameon=False,prop={'size':10})
+	
+		plt.subplot(313)
+		# sampling interval : 9X initial
+		plt.plot(Ps9,list_SNS[10],color='r',linewidth=1.0,label='Downsample x9 (phase 1)')
+		plt.plot(Ps9,list_SNS[12],color='indianred',linewidth=1.0,label='Downsample x9 (phase 3)')
+		plt.plot(Ps9,list_SNS[15],color='tomato',linewidth=1.0,label='Downsample x9 (phase 6)')
+		plt.plot(Ps9,list_SNS[18],color='maroon',linewidth=1.0,label='Downsample x9 (phase 9)')
+		plt.ylabel(' S/N ' ,fontsize=20)
+		plt.xlabel('Period (s)',fontsize=20)
+		plt.xlim(xmin=0.1,xmax=30)
+		plt.ylim(ymin,ymax)
+		plt.xticks(fontsize=20)
+		plt.yticks(fontsize=20)
+		plt.legend(frameon=False,prop={'size':10})
+
+		plt.savefig(name+'.png')
+		print "Periodogram available : ", name+'.png'
+
 
 if __name__=='__main__':
     main()
