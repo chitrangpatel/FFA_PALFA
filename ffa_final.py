@@ -55,7 +55,6 @@ def final_sifting_ffa(basenm, candfile_list, output_file, zapfn=[]):
 				      for i in range(len(candfile_list))]
 	while any(".dat" in dmlist[i] for i in range(len(dmlist))):
 		dmlist=[re.sub('\.dat$','',dmlist[i]) for i in range(len(dmlist))]
-		print 'removed dat'
 	candidates = ffa_sifting.ffa_read_candidates(candfile_for_sifting)
 	if zapfn != None:
 		known_birds_f = tuple(get_zaplist(zapfn))
