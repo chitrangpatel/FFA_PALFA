@@ -413,10 +413,10 @@ class FFACandlist(sifting.Candlist):
 		lines[l][3] = (lines[l][3]).center(15)
 		lines[l][4] = (lines[l][4]).center(15)
 		lines[l][5] = (lines[l][5]).center(15)
-	    length = len(lines[-1][0])
+	    #length = len(lines[-1][0])
 	    candfile2 = open(candfilenm, "w")
 	    with open(candfilenm, 'w') as fout:
-		fout.write("#" + "file:candnum".center(length)+"  P(ms)".center(41) +
+		fout.write("#" + "file:candnum".center(67)+"  P(ms)".center(41) +
 		 ("SNR").center(20) +("DM").center(14) + ("dt(ms)").center(18)+ ('numhits').center(12) +'\n')
     		for el in lines:
         		fout.write('{0}\n'.format(' '.join(el)))
