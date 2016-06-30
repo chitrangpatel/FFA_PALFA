@@ -299,7 +299,7 @@ def main():
 
     print 'Sifting the candidates ...'
     #making precands list (must be sifted)
-    candsfile_str = 'for_sifting_'+name+'.txt'
+    candsfile_str = name+'.txt'
     candsfile_list = open(candsfile_str ,'w')
     candsfile_list.write(name+'_precands.ffa')
     candsfile_list.close()
