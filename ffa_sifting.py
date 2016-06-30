@@ -35,7 +35,7 @@ class FFACandidate(sifting.Candidate):
     def __init__(self,candnum, p, snr, dt ,binn, dm, DMstr, filename, T, final_cands=False):
         self.path, self.filename = os.path.split(filename)
 	# to identify the filename, replace "_precands.ffa" by ".dat"
-	self.filename= re.sub('\_precands.ffa$',"",self.filename)
+	self.filename= self.filename.split('_precands.ffa',1)[0]
 	self.filename = self.filename + '.dat'
 	if final_cands :
 		#if final_cands, the candnum is replaced by the filename
@@ -405,8 +405,8 @@ class FFACandlist(sifting.Candlist):
 	    next(candfile2)
 	    lines = [line.split() for line in candfile2]
 	    for l in range(len(lines)):
-		lines[l][0] = re.sub('\:$',"",lines[l][0])
-		lines[l][0] = lines[l][0] +':'+str(l+1)+'\t'
+		lines[l][0] = lines[l][0].split('.dat',1)[0]
+		lines[l][0] = lines[l][0] +'.dat:'+str(l+1)+'\t'
 		del lines[l][1]
 		lines[l][1] = (lines[l][1]).center(40)
 		lines[l][2] = (lines[l][2]).center(15)
@@ -462,7 +462,7 @@ def ffa_candlist_from_candfile(filename, trackbad=False, trackdupes=False):
 		dt = float(split_line[3])
 		if final_cands :
 			filename = str(split_line[0])
-			filename = re.sub('\.dat$','',filename)
+			filename = filename.split('.dat',1)[0]
 			candnum = i
 			p = float(split_line[1])/1000.
 			f = 1.0/p
