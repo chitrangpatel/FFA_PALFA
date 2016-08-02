@@ -325,6 +325,7 @@ def main():
         # sampling interval : initial
         plt.plot(Ps1,list_SNS[0],color='k',linewidth=1.3,label='No Downsample')
         plt.ylabel(' S/N ' ,fontsize=20)
+        plt.fill_between(Ps9, 5, 0,alpha = '0.2',color='grey')
         plt.xlim(xmin=0.1,xmax=30)
         plt.ylim(ymin,ymax)
         plt.xticks(fontsize=20)
@@ -336,6 +337,7 @@ def main():
         plt.plot(Ps2,list_SNS[1],color='blue',linewidth=1.0,label='Downsample x2 (phase 1)')
         plt.plot(Ps2,list_SNS[2],color='steelblue',linewidth=1.0,label='Downsample x2 (phase 2)')
         plt.ylabel(' S/N ' ,fontsize=20)
+        plt.fill_between(Ps9, 5, 0,alpha = '0.2',color='grey')
         plt.xlim(xmin=0.1,xmax=30)
         plt.ylim(ymin,ymax)
         plt.xticks(fontsize=20)
@@ -350,6 +352,7 @@ def main():
         plt.plot(Ps9,list_SNS[18],color='maroon',linewidth=1.0,label='Downsample x9 (phase 9)')
         plt.ylabel(' S/N ' ,fontsize=20)
         plt.xlabel('Period (s)',fontsize=20)
+        plt.fill_between(Ps9, 5, 0,alpha = '0.2',color='grey')
         plt.xlim(xmin=0.1,xmax=30)
         plt.ylim(ymin,ymax)
         plt.xticks(fontsize=20)

@@ -275,6 +275,21 @@ class FFACandlist(sifting.Candlist):
         self.cands.sort(cmp_snr)
         for ii in reversed(range(len(self.cands))):
             currcand = self.cands[ii]
+
+            # Remove all the candidates with DM < low_DM_cutoff
+            if float(currcand.DM) <= low_DM_cutoff:
+                numremoved += 1
+                num_toolow += 1
+                #currcand.note = "Hit with max sigma (%g) has dm (%.2f) " \
+                #                "<= low DM cutoff (%.2f) " % \
+                #                    (hitsigma, hitdm, low_DM_cutoff)
+                self.mark_as_bad(ii, 'low_dmproblem')
+                if verbosity >= 2:
+                    print "Removing %s:%d (index: %d)" % \
+                            (currcand.filename, currcand.candnum, ii)
+                    print "    %s" % currcand.note
+                continue
+
             # Remove all the candidates without enough DM hits
             if len(currcand.hits) < numdms:
                 numremoved += 1
@@ -282,43 +297,28 @@ class FFACandlist(sifting.Candlist):
                 currcand.note = "Candidate has only %d DM hits. This is less " \
                                 "than minimum for 'good' cands (%d hits)" % \
                                 (len(currcand.hits), numdms)
-                self.mark_as_bad(ii, 'dmproblem')
+                self.mark_as_bad(ii, 'numdms_dmproblem')
                 if verbosity >= 2:
                     print "Removing %s:%d (index: %d)" % \
                             (currcand.filename, currcand.candnum, ii)
                     print "    %s" % currcand.note
                 continue
 
-            # Remove all the candidates where the max sigma DM is 
-            # less than the cutoff DM
-            # Recall - A hit is a 3-tuple: (DM, SNR, sigma)
             imax = Num.argmax(Num.array([hit[2] for hit in currcand.hits]))
             hitdm, hitsnr, hitsigma = currcand.hits[imax]
-            if float(hitdm) <= low_DM_cutoff:
-                numremoved += 1
-                num_toolow += 1
-                currcand.note = "Hit with max sigma (%g) has dm (%.2f) " \
-                                "<= low DM cutoff (%.2f) " % \
-                                    (hitsigma, hitdm, low_DM_cutoff)
-                self.mark_as_bad(ii, 'dmproblem')
-                if verbosity >= 2:
-                    print "Removing %s:%d (index: %d)" % \
-                            (currcand.filename, currcand.candnum, ii)
-                    print "    %s" % currcand.note
-                continue
+	    
 
             # Remove all the candidates where there are no hits at consecutive DMs
             if len(currcand.hits) > 1:
                 currcand.hits.sort(sifting.cmp_dms)
-                dm_indices = Num.asarray([dmdict["%.2f"%currcand.hits[jj][0]]
-                                          for jj in range(len(currcand.hits))])
+                dm_indices = Num.asarray([dmdict["%.2f"%currcand.hits[jj][0]] for jj in range(len(currcand.hits))])
                 min_dmind_diff = min(dm_indices[1:] - dm_indices[:-1])
                 if min_dmind_diff > 1:
                     numremoved += 1
                     num_gaps += 1
                     currcand.note = "DM list of hits has gaps (i.e. " \
                                     "consecutive DMs don't have hits)."
-                    self.mark_as_bad(ii, 'dmproblem')
+                    self.mark_as_bad(ii, 'no_consecutive_dmproblem')
                     if verbosity >= 2:
                         print "Removing %s:%d (index: %d)" % \
                                 (currcand.filename, currcand.candnum, ii)
