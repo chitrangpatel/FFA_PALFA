@@ -6,6 +6,10 @@ import re
 import glob
 import optparse
 
+import matplotlib
+matplotlib.use('agg')
+import matplotlib.pyplot as plt
+
 import ffa_tools as ft
 import ffa_stages as fs
 import ffa_sifting 
@@ -65,7 +69,17 @@ def final_sifting_ffa(basenm, candfile_list, output_file, zapfn=[]):
 		candidates.remove_harmonics()
 	except: 
 		print "No more candidates to sift."
-		
+    #### make summary plot for FFA cands ####
+        candidates.plot_ffa_summary(usefreqs=False)	
+        plt.title("%s FFA Summary" % basenm)
+        plt.savefig(basenm+".ffacands.summary.png")	
+    #### make rejects plot for FFA cands ####
+        candidates.plot_ffa_rejects(usefreqs=False)	
+        plt.title("%s FFA Rejected Cands" % basenm)
+        plt.savefig(basenm+".ffacands.rejects.png")	
+    #### write reports and print summary ####
+        candidates.print_ffacand_summary(basenm+".ffacands.summary")    
+        candidates.write_ffacand_report(basenm+".ffacands.report")
 	candidates.to_file(candfilenm = output_file)
 
 	#candfile_for_sifting is useless after sifting; delete it

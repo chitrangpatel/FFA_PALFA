@@ -45,7 +45,8 @@ class FFACandidate(sifting.Candidate):
 	self.p = p
 	#for the ffa, snr and sigma are the same thing.
         self.snr = snr
-	self.sigma = snr 
+	self.sigma = snr
+        self.numharm = 1  
 	self.dt = dt
         self.f = 1.0/p
         self.T = T
@@ -80,22 +81,193 @@ class FFACandlist(sifting.Candlist):
                          'dmproblem': []}
         self.duplicates = []
 
-    def plot_summary(self, usefreqs=True):
-	print "plot_summary :Not available for FFA candidates"
-    def plot_rejects(self, usefreqs=True):
-	print "plot_rejects: Not available for FFA candidates"
-    def plot_goodcands(self, usefreqs=True):
-	print "plot_goodcands: Not available for FFA candidates"
-    def reject_threshold(self, sigma_threshold=None,c_pow_threshold=None):
-	print "reject_threshold: Not available for FFA candidates"
-    def reject_harmpowcutoff(self, harm_pow_cutoff=None):
-	print "reject_harmpowcutoff: Not available for FFA candidates"
-    def reject_rogueharmpow(self):
-	print "reject_rogueharmpow: Not available for FFA candidates"
-    def print_cand_summary(self, summaryfilenm=None):
-	print "print_cand_summary: Not available for FFA candidates, should be thought."
-    def write_cand_report(self, reportfilenm=None):
-	print "write_cand_report: Not available for FFA candidates, should be thought."
+    def plot_ffa_summary(self, usefreqs=True):
+        """Produce a plot summarizing the sifiting performed.
+
+            Input:
+                usefreqs: If True, the horizontal axis will use
+                    frequency. If False, use period.
+            
+            Output:
+                fig: A matplotlib figure instance.
+        """
+        import matplotlib
+        import matplotlib.pyplot as plt
+
+        fig = plt.figure(figsize=(10,8)) 
+        ax = plt.axes((0.08, 0.18, 0.87, 0.80)) 
+        
+        # Get all candidates and sort by sigma
+        allcands = self.get_all_cands()
+        sigmas = Num.array([c.sigma for c in allcands])
+        isort = sigmas.argsort()
+        sigmas = sigmas[isort]
+
+        if usefreqs:
+            xdata = Num.array([c.f for c in allcands])[isort]
+            xlabel = "Freq (Hz)"
+            xscale = "log"
+        else:
+            xdata = Num.array([c.p for c in allcands])[isort]
+            xlabel = "Period (s)"
+            xscale = "loglin"
+
+        dms = Num.array([c.DM for c in allcands])[isort]
+        numharms = Num.array([c.numharm for c in allcands])[isort]
+
+        # Plot the all candidates 
+        scatt = plt.scatter(xdata, dms, s=sifting.sigma_to_size(sigmas), \
+                                c=Num.log2(numharms), \
+                                marker='o', alpha=0.7, zorder=-1) 
+        plt.set_cmap("Spectral") 
+  
+        # Add colorbar 
+        #fmtr = matplotlib.ticker.FuncFormatter(lambda x, pos: "%d" % 2**x)
+        #cax = plt.axes((0.18, 0.06, 0.67, 0.035))
+        #cb = plt.colorbar(scatt, cax=cax, ticks=(0,1,2,3,4), format=fmtr, \
+        #                    orientation="horizontal")
+        #cb.set_label("Num harmonics summed") 
+        
+        plt.axes(ax) # Set scatter plot's axes as current
+        plt.xscale(xscale)
+        plt.xlabel(xlabel)
+        mindm = Num.min(dms)
+        maxdm = Num.max(dms)
+        dmrange = Num.ptp(dms)
+
+        # Use log-scale y-axis if max DM > 2000
+        yscale = "log" if maxdm > 2000.0 else "linear"
+        plt.yscale(yscale)
+
+        if yscale is "log":
+            plt.ylim(1.0, maxdm+0.1*dmrange)
+        else:
+            plt.ylim(mindm-0.1*dmrange, maxdm+0.1*dmrange)
+
+        plt.ylabel(r"DM (pc cm$^{-3}$)") 
+        if not usefreqs:
+            plt.gca().xaxis.set_ticks(Num.concatenate((\
+                                        Num.logspace(-4,0,4, endpoint=False), \
+                                        Num.linspace(1,15,8))))
+            plt.gca().xaxis.set_ticks(Num.logspace(-4,0,40), minor=True)
+            plt.gca().xaxis.set_ticklabels([r"10$^{-4}$", r"10$^{-3}$", \
+                        r"10$^{-2}$", r"10$^{-1}$", "1", "3", "5", "7", \
+                        "9", "11", "13", "15"])
+            plt.xlim(max(short_period/5.0, min(xdata)/5.0), \
+                        min(long_period+0.5, max(xdata)+0.5))
+        else:
+            plt.xlim(min(xdata)/5.0, max(xdata)*2.0)
+            
+        ax.format_coord = lambda x,y: "x=%g, y=%g" % (x,y)
+        return fig
+    
+    def plot_ffa_rejects(self, usefreqs=True):
+        """Produce a plot showing why candidates were rejected by
+            the sifiting performed.
+
+            Input:
+                usefreqs: If True, the horizontal axis will use
+                    frequency. If False, use period.
+            
+            Output:
+                fig: A matplotlib figure instance.
+        """
+        import matplotlib
+        import matplotlib.pyplot as plt
+
+        fig = plt.figure(figsize=(10,8)) 
+        ax = plt.axes((0.08, 0.18, 0.87, 0.80)) 
+        
+        # Plot bad candidates
+        candlists = [self.badlists['knownbirds'], self.badlists['longperiod'], \
+                     self.badlists['shortperiod'], self.badlists['threshold'], \
+                     self.badlists['dmproblem'], \
+                     self.cands, self.duplicates]
+        labels = ['Known birdires', 'Long period', 'Short period', \
+                    'Threshold', 'DM problem', 'Good cands', 'Hits']
+        colours = ['#FF0000', '#800000', '#008000', '#00FF00', \
+                    '#800080', 'r', 'k']
+        markers = ['o', 'o', 'o', 'o', 'o', 'x', 's']
+        zorders = [-2, -2, -2, -2, -2, 0, 0]
+        sizes = [50, 50, 50, 50, 50, 100, 10]
+        fixedsizes = [0, 0, 0, 0, 0, 1, 1]
+        lws = [1,1,1,1,1,2,1]
+        handles = []
+        for cands, colour, marker, zorder, size, fixedsize, lw in \
+                zip(candlists, colours, markers, zorders, sizes, fixedsizes, lws):
+            if len(cands):
+                sigmas = Num.array([c.sigma for c in cands])
+                isort = sigmas.argsort()
+                sigmas = sigmas[isort]
+                if usefreqs:
+                    xdata = Num.array([c.f for c in cands])[isort]
+                    xlabel = "Freq (Hz)"
+                    xscale = "log"
+                else:
+                    xdata = Num.array([c.p for c in cands])[isort]
+                    xlabel = "Period (s)"
+                    xscale = "loglin"
+                dms = Num.array([c.DM for c in cands])[isort]
+                
+                # Plot the candidates
+                if fixedsize:
+                    plt.scatter(xdata, dms, s=size, lw=lw, \
+                                c=colour, marker=marker, alpha=0.7, zorder=zorder)
+                else:
+                    plt.scatter(xdata, dms, s=sigma_to_size(sigmas), lw=lw, \
+                                c=colour, marker=marker, alpha=0.7, zorder=zorder)
+            handles.append(plt.scatter([0], [0], s=size, c=colour, \
+                                    marker=marker, alpha=0.7))
+
+        fig.legend(handles, labels, 'lower center', \
+                        prop={'size':'x-small'}, ncol=4)
+
+        plt.xscale(xscale) 
+        plt.xlabel(xlabel)
+
+        alldms = Num.array([c.DM for c in self.get_all_cands()])
+        mindm = Num.min(alldms)
+        maxdm = Num.max(alldms)
+        dmrange = Num.ptp(alldms)
+
+        # Use log-scale y-axis if max DM > 2000
+        yscale = "log" if maxdm > 2000.0 else "linear"
+        plt.yscale(yscale)
+
+        if yscale is "log":
+            plt.ylim(1.0, maxdm+0.1*dmrange)
+        else:
+            plt.ylim(mindm-0.1*dmrange, maxdm+0.1*dmrange)
+
+        plt.ylabel(r"DM (pc cm$^{-3}$)") 
+        if not usefreqs:
+            all_xdata = Num.array([c.p for c in self.get_all_cands()])
+            plt.gca().xaxis.set_ticks(Num.concatenate((\
+                                        Num.logspace(-4,0,4, endpoint=False), \
+                                        Num.linspace(1,15,8))))
+            plt.gca().xaxis.set_ticks(Num.logspace(-4,0,40), minor=True)
+            plt.gca().xaxis.set_ticklabels([r"10$^{-4}$", r"10$^{-3}$", \
+                        r"10$^{-2}$", r"10$^{-1}$", "1", "3", "5", "7", \
+                        "9", "11", "13", "15"])
+            plt.xlim(max(short_period/5.0, min(all_xdata)/5.0), \
+                        min(long_period+0.5, max(all_xdata)+0.5))
+        else:
+            all_xdata = Num.array([c.f for c in self.get_all_cands()])
+            plt.xlim(min(all_xdata)/5.0, max(all_xdata)*2.0)
+
+        return fig
+    #def plot_goodcands(self, usefreqs=True):
+	#print "plot_goodcands: Not available for FFA candidates"
+    #def reject_threshold(self, sigma_threshold=None,c_pow_threshold=None):
+	#print "reject_threshold: Not available for FFA candidates"
+    #def reject_harmpowcutoff(self, harm_pow_cutoff=None):
+	#print "reject_harmpowcutoff: Not available for FFA candidates"
+    #def reject_rogueharmpow(self):
+	#print "reject_rogueharmpow: Not available for FFA candidates"
+    #def print_cand_summary(self, summaryfilenm=None):
+	#print "print_cand_summary: Not available for FFA candidates, should be thought."
+    #def write_cand_report(self, reportfilenm=None):
+	#print "write_cand_report: Not available for FFA candidates, should be thought."
 
 
     def remove_duplicate_candidates(self, verbosity=1):
@@ -378,6 +550,61 @@ class FFACandlist(sifting.Candlist):
                 self.mark_as_bad(ii, 'knownbirds')
                 continue
 
+    def print_ffacand_summary(self, summaryfilenm=None):
+        """Write a summary of all candidates to file (or stdout).
+
+            Input:
+                summaryfilenm: Name of file to write to. If None write to stdout.
+                    (Default: write to stdout).
+
+            Outputs:
+                None
+        """
+        if summaryfilenm is None:
+            summaryfile = sys.stdout
+        elif summaryfilenm in [sys.stdout, sys.stderr]:
+            summaryfile = summaryfilenm
+        else:
+            summaryfile = open(summaryfilenm, "w")
+        summaryfile.write("   Candlist contains %d 'good' candidates\n" % \
+                            len(self.cands))
+        summaryfile.write("      # Known RFI rejects:           %d\n" % \
+              len(self.badlists['knownbirds']))
+        summaryfile.write("      # Short period rejects:        %d\n" % \
+              len(self.badlists['shortperiod']))
+        summaryfile.write("      # Long period rejects:         %d\n" % \
+              len(self.badlists['longperiod']))
+        summaryfile.write("      # Missed threshold:            %d\n" % \
+              len(self.badlists['threshold']))
+        summaryfile.write("      # Duplicate candidates:        %d\n" % \
+              len(self.duplicates))
+        summaryfile.write("      # Candidates with DM problems: %d\n" % \
+              len(self.badlists['dmproblem']))
+        if summaryfilenm not in [None, sys.stdout, sys.stderr]:
+            summaryfile.close()
+  
+    def write_ffacand_report(self, reportfilenm=None):
+        """Write a report of all bad candidates to file (or stdout).
+
+            Input:
+                reportfilenm: Name of file to write to. If None write to stdout.
+                    (Default: write to stdout).
+
+            Outputs:
+                None
+        """
+        if reportfilenm is None:
+            reportfile = sys.stdout
+        else:
+            reportfile = open(reportfilenm, "w")
+        reportfile.write("#" + "file:candnum".center(66) + "DM".center(9) +
+                       "SNR".center(8) + "P(ms)".center(14) + "numhits".center(9) + "\n")
+        badcands = self.get_all_badcands()
+        for badcand in badcands:
+            reportfile.write("%s (%d)\n" % (str(badcand), len(badcand.hits)))
+            reportfile.write("    Note: %s\n\n" % badcand.note)
+        if reportfilenm is not None:
+            reportfile.close()
 	
     def to_file(self, candfilenm=None):
         """Write Candlist to file (or stdout).
